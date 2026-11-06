@@ -1,0 +1,28 @@
+# Netlify configuration
+# Deploy: connect this folder (publish directory ".") in Netlify. Forms are detected automatically
+# from the data-netlify attribute on the quotation form. Set up email notifications in
+# Netlify → Site → Forms → Notifications → shreeradhe.steel.alloys@gmail.com
+
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # NOTE: if you edit an inline <script> in index.html, regenerate its sha256 hash below.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+pM7T8WuJ5jgKJqVV3F993pVVGpxZT3MRlDn4iJWPeo=' 'sha256-wfZVb59XOcuefPKwXjzbxhb6XP6Z3uXzMau3qBwFpgM='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://cdn.jsdelivr.net; frame-src https://www.google.com https://maps.google.com; form-action 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; upgrade-insecure-requests"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    X-Frame-Options = "DENY"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/docs/*"
+  [headers.values]
+    X-Robots-Tag = "noindex"

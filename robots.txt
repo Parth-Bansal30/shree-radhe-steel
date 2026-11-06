@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /docs/
+Disallow: /thanks.html
+
+# TODO(domain): replace with the live domain
+Sitemap: https://www.example.com/sitemap.xml
