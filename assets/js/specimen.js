@@ -93,7 +93,7 @@ export function initStudio({ canvas }) {
   build('round');
 
   /* ---------- Interaction ---------- */
-  let yaw = -0.75, pitch = 0.32, targetYaw = yaw, dragging = false, lastX = 0, lastY = 0, autoSpin = true, needsRender = true;
+  let yaw = 0.95, pitch = 0.3, targetYaw = yaw, dragging = false, lastX = 0, lastY = 0, autoSpin = true, needsRender = true;
   canvas.addEventListener('pointerdown', (e) => { dragging = true; autoSpin = false; lastX = e.clientX; lastY = e.clientY; canvas.setPointerCapture(e.pointerId); });
   canvas.addEventListener('pointermove', (e) => {
     if (!dragging) return;

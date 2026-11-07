@@ -92,11 +92,11 @@ export async function initWorld({ canvas, state, lite = false, onProgress = () =
   const envScene = new THREE.Scene();
   envScene.add(new THREE.Mesh(new THREE.SphereGeometry(50, 32, 16), skyMat.clone()));
   envScene.children[0].material.uniforms = THREE.UniformsUtils.clone(skyUniforms);
-  const cardMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(3.2, 3.1, 3.0), side: THREE.DoubleSide });
+  const cardMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.5, 1.45, 1.4), side: THREE.DoubleSide });
   const card1 = new THREE.Mesh(new THREE.PlaneGeometry(30, 6), cardMat); card1.position.set(0, 28, 6); card1.lookAt(0, 0, 0); envScene.add(card1);
-  const card2 = new THREE.Mesh(new THREE.PlaneGeometry(5, 26), new THREE.MeshBasicMaterial({ color: new THREE.Color(1.6, 1.75, 2.0), side: THREE.DoubleSide }));
+  const card2 = new THREE.Mesh(new THREE.PlaneGeometry(5, 26), new THREE.MeshBasicMaterial({ color: new THREE.Color(0.9, 1.0, 1.15), side: THREE.DoubleSide }));
   card2.position.set(-22, 10, 22); card2.lookAt(0, 4, 0); envScene.add(card2);
-  const card3 = new THREE.Mesh(new THREE.PlaneGeometry(40, 2.2), new THREE.MeshBasicMaterial({ color: new THREE.Color(2.2, 2.2, 2.3), side: THREE.DoubleSide }));
+  const card3 = new THREE.Mesh(new THREE.PlaneGeometry(40, 2.2), new THREE.MeshBasicMaterial({ color: new THREE.Color(1.1, 1.1, 1.15), side: THREE.DoubleSide }));
   card3.position.set(4, 7, 30); card3.lookAt(0, 1, 0); envScene.add(card3);
   const groundEnv = new THREE.Mesh(new THREE.CircleGeometry(50, 32), new THREE.MeshBasicMaterial({ color: 0x15110e }));
   groundEnv.rotation.x = -Math.PI / 2; groundEnv.position.y = -2; envScene.add(groundEnv);
@@ -105,7 +105,7 @@ export async function initWorld({ canvas, state, lite = false, onProgress = () =
   onProgress(0.45);
 
   /* ---------- Lights ---------- */
-  const sun = new THREE.DirectionalLight(0xffc48a, 3.4);
+  const sun = new THREE.DirectionalLight(0xffc48a, 3.0);
   sun.castShadow = true;
   sun.shadow.mapSize.set(lite ? 1024 : 2048, lite ? 1024 : 2048);
   Object.assign(sun.shadow.camera, { left: -17, right: 17, top: 17, bottom: -17, near: 1, far: 90 });
@@ -364,7 +364,7 @@ export async function initWorld({ canvas, state, lite = false, onProgress = () =
   const items = [
     { obj: plates, yard: [-1.4, 0, -3.6, 0.12], truck: null },
     { obj: rounds, yard: [2.4, roundsLift, -3.0, 0], truck: [0.62, 1.47 + roundsLift, -0.6, Math.PI / 2] },
-    { obj: flats, yard: [-5.2, 0, -4.2, 0.4], truck: null },
+    { obj: flats, yard: [0.6, 0, -6.4, 0.25], truck: null },
     { obj: squares, yard: [4.6, 0, -5.6, -0.25], truck: [0.62, 1.47, 4.5, Math.PI / 2] },
     { obj: blocks, yard: [-6.3, 0, -0.4, 0.5], truck: [-0.6, 1.47, 5.4, 0] },
   ];
@@ -445,7 +445,7 @@ export async function initWorld({ canvas, state, lite = false, onProgress = () =
   function makeComposer() {
     composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
-    bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.5, 0.65, 0.9);
+    bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.4, 0.6, 1.05);
     composer.addPass(bloom);
     composer.addPass(new OutputPass());
   }
@@ -500,7 +500,7 @@ export async function initWorld({ canvas, state, lite = false, onProgress = () =
     skyUniforms.uDusk.value = dusk;
     scene.fog.color.copy(fogA).lerp(fogB, dusk);
     scene.fog.near = lerp(40, 18, dusk); scene.fog.far = lerp(320, 140, dusk);
-    sun.intensity = 3.4 * (1 - dusk * 0.85);
+    sun.intensity = 3.0 * (1 - dusk * 0.85);
     hemi.intensity = 0.55 * (1 - dusk * 0.6);
     scene.environmentIntensity = lerp(1, 0.35, dusk);
     renderer.toneMappingExposure = lerp(1.0, 0.85, dusk) * (s.exposure ?? 1);
@@ -558,7 +558,7 @@ export async function initWorld({ canvas, state, lite = false, onProgress = () =
     camera.lookAt(look);
     sky.position.copy(camera.position);
 
-    if (composer && bloom) { bloom.strength = lerp(0.45, 0.9, Math.max(x, dusk * 0.6)); composer.render(dt); } else renderer.render(scene, camera);
+    if (composer && bloom) { bloom.strength = lerp(0.32, 0.85, Math.max(x, dusk * 0.6)); composer.render(dt); } else renderer.render(scene, camera);
 
     // adaptive quality
     ema = ema * 0.94 + dt * 1000 * 0.06;
