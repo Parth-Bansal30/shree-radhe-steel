@@ -9,8 +9,9 @@ const BUSINESS = {
   phoneTel: '+919911194545',
   email: 'shreeradhe.steel.alloys@gmail.com',
 };
-// Hosts where Netlify Forms is live. Add the real domain here once it points at Netlify.
-const NETLIFY_HOSTS = ['netlify.app'];
+// Hosts that cannot receive form posts (static preview hosting). Everywhere else the form posts to
+// Netlify Forms, which emails each verified submission to the business inbox.
+const STATIC_HOSTS = ['github.io'];
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -494,11 +495,11 @@ const form = $('[data-quote-form]');
 const statusBox = $('[data-form-status]');
 const submitBtn = $('[data-submit]');
 const fileInput = $('#f-file');
-const MAX_FILE = 8 * 1024 * 1024;
+const MAX_FILE = 7 * 1024 * 1024; // Netlify caps the whole request at 8 MB
 const ALLOWED_EXT = ['pdf', 'png', 'jpg', 'jpeg', 'webp', 'dwg', 'dxf', 'xls', 'xlsx', 'doc', 'docx', 'csv'];
 const host = location.hostname;
-const FORM_MODE = ['localhost', '127.0.0.1', '[::1]', ''].includes(host) || location.protocol === 'file:' ? 'local'
-  : NETLIFY_HOSTS.some((h) => host === h || host.endsWith(`.${h}`)) ? 'netlify' : 'fallback';
+const FORM_MODE = ['localhost', '127.0.0.1', '[::1]', ''].includes(host) || host.endsWith('.localhost') || location.protocol === 'file:' ? 'local'
+  : STATIC_HOSTS.some((h) => host === h || host.endsWith(`.${h}`)) ? 'fallback' : 'netlify';
 
 { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); $('#f-date').min = d.toISOString().slice(0, 10); }
 function normalisePhone(v) {
@@ -526,7 +527,7 @@ function validate() {
   if (f) {
     const ext = f.name.split('.').pop().toLowerCase();
     if (!ALLOWED_EXT.includes(ext)) fm = 'Please upload a PDF, image, DWG/DXF, Excel or Word file.';
-    else if (f.size > MAX_FILE) fm = `This file is ${(f.size / 1048576).toFixed(1)} MB. The limit is 8 MB. Send larger drawings on WhatsApp or by email.`;
+    else if (f.size > MAX_FILE) fm = `This file is ${(f.size / 1048576).toFixed(1)} MB. The limit is 7 MB. Send larger drawings on WhatsApp or by email.`;
   }
   check(fileInput, fm);
   return errors;
@@ -592,9 +593,14 @@ form.addEventListener('submit', async (e) => {
     return;
   }
   setBusy(true);
-  const ctrl = new AbortController(); const timer = setTimeout(() => ctrl.abort(), 20000);
+  // inbox subject: what is wanted and by whom, so enquiries can be scanned at a glance
+  const subj = [$('#f-product').value, $('#f-grade').value.trim()].filter(Boolean).join(' · ');
+  form.subject.value = `Steel enquiry: ${subj || 'website'} from ${$('#f-name').value.trim()}`.slice(0, 140);
+  const data = new FormData(form);
+  if (!fileInput.files[0]) data.delete('attachment'); // never send an empty file part
+  const ctrl = new AbortController(); const timer = setTimeout(() => ctrl.abort(), 40000); // uploads may take up to 30 s
   try {
-    const res = await fetch('/', { method: 'POST', body: new FormData(form), signal: ctrl.signal, headers: { Accept: 'text/html' } });
+    const res = await fetch('/', { method: 'POST', body: data, signal: ctrl.signal, headers: { Accept: 'text/html' } });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     form.reset(); fileInput.dispatchEvent(new Event('change')); attempted = false;
     showStatus('success', `Enquiry received. Thank you, ${name}.`, `We'll reply on ${phone.replace(/(\d{5})(\d{5})/, '$1 $2')} during business hours (Mon–Sat, 9 AM–9 PM). If it's urgent, call ${BUSINESS.phoneDisplay}.`);

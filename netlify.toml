@@ -1,7 +1,8 @@
 # Netlify configuration
-# Deploy: connect this folder (publish directory ".") in Netlify. Forms are detected automatically
-# from the data-netlify attribute on the quotation form. Set up email notifications in
-# Netlify → Site → Forms → Notifications → shreeradhe.steel.alloys@gmail.com
+# Deploy: Add new project > Import an existing project > GitHub > this repo (publish directory ".").
+# Forms: in the project, open Forms > Enable form detection, then redeploy once. Netlify finds the
+# "quote" form in index.html. Then Forms > Submission notifications > Add notification > Email, and
+# enter shreeradhe.steel.alloys@gmail.com (it must be a member of the Netlify team).
 
 [build]
   publish = "."
@@ -26,3 +27,10 @@
   for = "/docs/*"
   [headers.values]
     X-Robots-Tag = "noindex"
+
+# The archived first version stays in the repo but is not served on Netlify
+[[redirects]]
+  from = "/v1/*"
+  to = "/"
+  status = 301
+  force = true
