@@ -1,6 +1,7 @@
 /* Shree Radhe Steel Industries — site behaviour (v2)
    No trackers, no API keys. GSAP, ScrollTrigger and Lenis load from CDNs; everything degrades without them. */
-import { GRADES, FAMILIES, PROPS, ELEMENTS } from './grades.js';
+import { FAMILIES } from './grades.js';
+import { initCatalog } from './catalog.js';
 
 const BUSINESS = {
   whatsapp: '919911194545',
@@ -181,14 +182,15 @@ if (finePointer && !reduced) {
 const story = $('[data-story]');
 const chapters = $$('[data-chapter]', story);
 const hudNum = $('[data-hud-num]'), hudLabel = $('[data-hud-label]'), hudBar = $('[data-hud-bar]');
-const CH_NAMES = ['Shree Radhe Steel', 'Raw material', 'Precision', 'Grade', 'Supply', 'Delivery'];
+const CH_NAMES = ['Shree Radhe Steel', 'Raw material', 'Precision', 'Grade', 'Supply', 'Loading', 'Delivery'];
 const KEYS = ['cx', 'cy', 'cz', 'lx', 'ly', 'lz', 'dusk', 'heat', 'sparks', 'xray', 'dims', 'grid'];
 const K_WIDE = [
   [10.5, 2.3, 15.5, -2.6, 1.25, 0, 0, 0, 0.14, 0, 0, 0],
   [8.4, 1.3, 5.6, 2.3, 0.85, 0.7, 0.12, 1, 1, 0, 0, 0],
   [0.4, 3.4, 18.5, -2.3, 1.0, 0, 0.88, 0, 0, 1, 1, 1],
   [8.9, 1.0, 2.5, 3.6, 0.86, 1.3, 0.3, 0, 0, 0, 0, 0.12],
-  [13, 9.5, 18, -6.2, -0.4, -3.4, 0, 0, 0, 0, 0, 0],
+  [6, 13, 20, -3.0, 0, -2.6, 0, 0, 0, 0, 0, 0],
+  [11.5, 5.8, 17.5, -2.4, 1.9, 0.8, 0.02, 0, 0, 0, 0, 0],
   [7.5, 3.4, 16.5, -4.2, 1.5, 1, 0.05, 0, 0, 0, 0, 0],
   [1.6, 2.4, 17.5, -5.2, 1.6, -30, 0.18, 0, 0, 0, 0, 0],
 ];
@@ -198,29 +200,43 @@ const K_TALL = [
   [0.2, 3.6, 17.5, 0.0, -0.8, 0, 0.88, 0, 0, 1, 1, 1],
   [8.6, 1.3, 0.9, 3.6, 0.2, 0.25, 0.3, 0, 0, 0, 0, 0.12],
   [14.5, 11, 19.5, -1.2, -1.6, -2.4, 0, 0, 0, 0, 0, 0],
+  [9.5, 6.5, 19, -2.2, 0.6, 1.6, 0.02, 0, 0, 0, 0, 0],
   [8, 4.4, 19.5, -4.4, -0.2, 0, 0.05, 0, 0, 0, 0, 0],
   [2.2, 2.8, 19, -5.2, 0.2, -30, 0.18, 0, 0, 0, 0, 0],
 ];
-const state = { follow: 0, grade: 0, assemble: 0, truckIn: 0, load: 0, drive: 0, exposure: 1, parallax: 1 };
+const state = { fill: 0.2, follow: 0, grade: 0, assemble: 0, truckIn: 0, load: 0, drive: 0, exposure: 1, parallax: 1 };
 KEYS.forEach((k, i) => { state[k] = K_WIDE[0][i]; });
 let storyP = 0, activeCh = -1, world = null;
 
+// Chapter centres in page coordinates, measured once per layout change (no layout reads while scrolling)
+let centers = [], storyTop = 0, storyBottom = 0;
+function measureStory() {
+  const y = scrollY;
+  centers = chapters.map((el) => { const r = el.getBoundingClientRect(); return r.top + y + r.height / 2; });
+  const sr = story.getBoundingClientRect(); storyTop = sr.top + y; storyBottom = sr.bottom + y;
+}
 function computeStoryP() {
-  const vc = innerHeight / 2;
-  const c = chapters.map((el) => { const r = el.getBoundingClientRect(); return r.top + r.height / 2; });
-  const sr = story.getBoundingClientRect();
+  if (!centers.length) measureStory();
+  const y = lenis ? lenis.scroll : scrollY;
+  const vc = y + innerHeight / 2;
+  const c = centers, n = c.length;
+  const bottom = storyBottom - y;
   let p;
   if (vc <= c[0]) p = 0;
-  else if (vc >= c[c.length - 1]) {
+  else if (vc >= c[n - 1]) {
     // after the last chapter's centre, run on until the story's bottom reaches the viewport bottom
-    const span = Math.max(1, sr.bottom - c[c.length - 1] - innerHeight / 2);
-    p = 5 + clamp01((vc - c[c.length - 1]) / span);
+    const span = Math.max(1, storyBottom - c[n - 1] - innerHeight / 2);
+    p = n - 1 + clamp01((vc - c[n - 1]) / span);
   } else {
-    for (let i = 0; i < c.length - 1; i++) if (vc >= c[i] && vc < c[i + 1]) { p = i + (vc - c[i]) / (c[i + 1] - c[i]); break; }
+    for (let i = 0; i < n - 1; i++) if (vc >= c[i] && vc < c[i + 1]) { p = i + (vc - c[i]) / (c[i + 1] - c[i]); break; }
   }
   storyP = p;
-  return { p, inStory: sr.bottom > innerHeight * 0.35, past: sr.bottom < 0 };
+  return { p, inStory: bottom > innerHeight * 0.35, past: bottom < 0 };
 }
+addEventListener('resize', () => { centers = []; }, { passive: true });
+addEventListener('load', () => { centers = []; queueTick(); });
+document.fonts?.ready.then(() => { centers = []; queueTick(); });
+ST?.addEventListener?.('refresh', () => { centers = []; queueTick(); });
 
 function applyState(p) {
   const K = innerWidth / innerHeight < 0.9 ? K_TALL : K_WIDE;
@@ -229,24 +245,25 @@ function applyState(p) {
   KEYS.forEach((k, j) => { state[k] = lerp(K[i][j], K[i + 1][j], t); });
   state.grade = 6 * smooth(2.5, 3.45, p);
   state.assemble = smooth(3.25, 3.95, p);
-  state.truckIn = smooth(4.15, 4.95, p);
-  state.load = smooth(4.95, 5.45, p);
-  state.drive = clamp01((p - 5.45) / 0.55);
-  state.follow = smooth(5.4, 5.85, p) * 0.9;
+  state.truckIn = smooth(4.05, 4.75, p);
+  state.load = clamp01((p - 4.55) / 1.15);
+  state.drive = clamp01((p - 5.9) / 0.95);
+  state.follow = smooth(5.85, 6.5, p) * 0.9;
+  state.fill = 0.2 + 0.7 * smooth(3.3, 4.0, p) - 0.35 * smooth(6.0, 6.8, p);
 }
 
 function storyTick() {
   const { p, inStory, past } = computeStoryP();
   applyState(p);
-  const a = Math.min(5, Math.round(p));
+  const a = Math.min(chapters.length - 1, Math.round(p));
   if (a !== activeCh) {
     activeCh = a;
     chapters.forEach((el, i) => el.classList.toggle('is-active', i === a));
     hudNum.textContent = String(a).padStart(2, '0');
     hudLabel.textContent = CH_NAMES[a];
   }
-  hudBar.style.transform = `scaleX(${Math.max(0.02, p / 6)})`;
-  html.classList.toggle('in-story', inStory && p > 0.35 && p < 5.9);
+  hudBar.style.transform = `scaleX(${Math.max(0.02, p / chapters.length)})`;
+  html.classList.toggle('in-story', inStory && p > 0.35 && p < chapters.length - 0.1);
   story.classList.toggle('is-past', past);
   const off = past;
   $('[data-world]').classList.toggle('is-off', off);
@@ -270,7 +287,7 @@ for (let i = 0; i < 7; i++) dots.appendChild(document.createElement('i'));
 function onGrade(g, i) {
   $('[data-readout-code]').textContent = g.code;
   $('[data-readout-fam]').textContent = FAMILIES.find((f) => f.id === g.fam)?.name || '';
-  $('[data-readout-eq]').textContent = g.eq.join(' · ');
+  $('[data-readout-eq]').textContent = g.eq.slice(0, 3).map(([, v]) => v.split(' (')[0]).join(' · ');
   $$('i', dots).forEach((d, k) => { d.classList.toggle('is-on', k <= i); d.style.setProperty('--paint', g.paint); });
 }
 
@@ -309,7 +326,6 @@ async function boot3D() {
     setLoad(0.2);
     world = await initWorld({ canvas: $('[data-world]'), state, lite, onProgress: (v) => setLoad(0.2 + v * 0.75), onGrade });
     html.classList.add('is-world');
-    window.__srs = { world, state, lenis };
     storyTick();
     world.start();
     finishLoading();
@@ -378,121 +394,9 @@ if (gsap && ST && !reduced) {
 addEventListener('load', () => ST?.refresh());
 
 /* =========================================================
-   GRADE STUDIO
+   CATALOGUE: grade studio, compare, products, enquiry list
    ========================================================= */
-const famBox = $('[data-fams]'), grid = $('[data-ggrid]'), search = $('[data-gsearch]'), empty = $('[data-gempty]');
-let famSel = 'all', gradeSel = GRADES.find((g) => g.code === 'EN24'), formSel = 'round', studio = null;
-const FORM_TO_PRODUCT = { round: ['Round bars', 'Round'], square: ['Square bars', 'Square'], flat: ['Flats', 'Flat'], block: ['Square blocks', 'Block'] };
-const famName = (id) => FAMILIES.find((f) => f.id === id)?.name || '';
-
-function specimenSVG(g, size = 48) {
-  const id = `s${Math.random().toString(36).slice(2, 8)}`;
-  const light = g.fam === 'stainless' ? '#f4f6f8' : '#e3e7eb';
-  const dark = g.fam === 'tool' ? '#5d6570' : g.fam === 'stainless' ? '#9aa6b3' : '#727b86';
-  return `<svg viewBox="0 0 48 48" width="${size}" height="${size}" aria-hidden="true"><defs><radialGradient id="${id}g" cx=".36" cy=".32" r=".8"><stop offset="0" stop-color="${light}"/><stop offset="1" stop-color="${dark}"/></radialGradient><clipPath id="${id}c"><circle cx="24" cy="24" r="20.5"/></clipPath></defs><circle cx="24" cy="24" r="22.5" fill="#0b0e11" stroke="rgba(255,255,255,.16)"/><circle cx="24" cy="24" r="20.5" fill="url(#${id}g)"/><g clip-path="url(#${id}c)"><path d="M0 31.5C12 29 30 35 48 30.5V48H0Z" fill="${g.paint}" opacity=".95"/></g><g fill="none" stroke="rgba(255,255,255,.22)" stroke-width=".6"><circle cx="24" cy="24" r="15"/><circle cx="24" cy="24" r="9.5"/><circle cx="24" cy="24" r="4.5"/></g></svg>`;
-}
-
-function renderFams() {
-  const all = [{ id: 'all', name: 'All grades' }, ...FAMILIES];
-  famBox.innerHTML = '';
-  all.forEach((f) => {
-    const b = document.createElement('button');
-    b.type = 'button'; b.role = 'tab'; b.textContent = f.name; b.dataset.fam = f.id;
-    b.setAttribute('aria-selected', String(f.id === famSel));
-    b.addEventListener('click', () => { famSel = f.id; renderFams(); renderGrid(); });
-    famBox.appendChild(b);
-  });
-}
-function matches(g, q) {
-  if (!q) return true;
-  const hay = [g.code, g.sub, g.aka, ...g.eq, famName(g.fam), g.use, ...g.el.map((e) => ELEMENTS[e])].join(' ').toLowerCase().replace(/\s+/g, '');
-  return hay.includes(q.toLowerCase().replace(/\s+/g, ''));
-}
-function renderGrid() {
-  const q = search.value.trim();
-  const list = GRADES.filter((g) => (famSel === 'all' || g.fam === famSel) && matches(g, q));
-  grid.innerHTML = '';
-  list.forEach((g) => {
-    const li = document.createElement('li');
-    const b = document.createElement('button');
-    b.type = 'button'; b.className = 'gchip'; b.setAttribute('aria-pressed', String(g === gradeSel));
-    b.innerHTML = `${specimenSVG(g)}<b>${g.code}</b><span>${famName(g.fam)}</span>`;
-    b.addEventListener('click', () => { selectGrade(g); if (innerWidth < 1181) scrollToEl($('[data-panel]')); });
-    li.appendChild(b); grid.appendChild(li);
-  });
-  empty.hidden = list.length > 0;
-  if (!list.length) $('[data-ask-search]').href = waLink(`Hello Shree Radhe Steel, do you have ${q || 'this grade'}?\nSize: \nQuantity: `);
-}
-search.addEventListener('input', renderGrid);
-
-function radar(rel) {
-  const cx = 110, cy = 100, R = 68, n = PROPS.length;
-  const pt = (i, r) => { const a = -Math.PI / 2 + (i / n) * Math.PI * 2; return [cx + Math.cos(a) * r, cy + Math.sin(a) * r]; };
-  let s = '';
-  for (let k = 1; k <= 5; k++) s += `<polygon class="ax" points="${PROPS.map((_, i) => pt(i, (R * k) / 5).join(',')).join(' ')}"/>`;
-  PROPS.forEach((_, i) => { const [x, y] = pt(i, R); s += `<line class="ax" x1="${cx}" y1="${cy}" x2="${x}" y2="${y}"/>`; });
-  s += `<polygon class="val" points="${rel.map((v, i) => pt(i, (R * v) / 5).join(',')).join(' ')}"/>`;
-  PROPS.forEach((p, i) => {
-    const [x, y] = pt(i, R + 14); const anchor = Math.abs(x - cx) < 6 ? 'middle' : x > cx ? 'start' : 'end';
-    s += `<text x="${x.toFixed(1)}" y="${(y + 3).toFixed(1)}" text-anchor="${anchor}">${p.replace(' resistance', '')}</text>`;
-  });
-  return s;
-}
-
-function updatePanel() {
-  const g = gradeSel;
-  $('[data-g-fam]').textContent = famName(g.fam);
-  $('[data-g-code]').textContent = g.code;
-  $('[data-g-aka]').textContent = [g.sub, g.aka ? `aka ${g.aka}` : ''].filter(Boolean).join(' · ');
-  $('[data-g-eq]').textContent = g.eq.length ? `Close equivalents: ${g.eq.join(' · ')}` : '';
-  $('[data-g-use]').textContent = g.use;
-  $('[data-g-el]').innerHTML = g.el.map((e) => `<li><b>${e}</b><span>${ELEMENTS[e]}</span></li>`).join('');
-  $('[data-g-radar]').innerHTML = radar(g.rel);
-  const formLabel = FORM_TO_PRODUCT[formSel][0].replace(/s$/, '').toLowerCase();
-  $('[data-g-wa]').href = waLink(`Hello Shree Radhe Steel, please share availability for ${g.code} ${formLabel}.\nSize: \nQuantity: \nDelivery location: `);
-  $('[data-g-wa-label]').textContent = `Ask for ${g.code}`;
-  $('[data-studio-fallback]').innerHTML = specimenSVG(g, 220);
-  studio?.setSpecimen({ grade: g, form: formSel });
-}
-function selectGrade(g) {
-  gradeSel = g;
-  $$('.gchip', grid).forEach((b) => b.setAttribute('aria-pressed', String(b.querySelector('b').textContent === g.code)));
-  updatePanel();
-}
-$$('[data-form]').forEach((b) => b.addEventListener('click', () => {
-  formSel = b.dataset.form;
-  $$('[data-form]').forEach((x) => x.setAttribute('aria-checked', String(x === b)));
-  updatePanel();
-}));
-$('[data-g-quote]').addEventListener('click', () => {
-  const [product, form] = FORM_TO_PRODUCT[formSel];
-  preselectQuote({ product, grade: gradeSel.code, form });
-});
-$('[data-grade-list]').innerHTML = GRADES.map((g) => `<option value="${g.code}">${famName(g.fam)}</option>`).join('');
-renderFams(); renderGrid(); updatePanel();
-
-// 3D studio + product renders (lazy, after the hero is up)
-async function bootStudio() {
-  if (!canUse3D()) { html.classList.add('no-studio'); return; }
-  try {
-    const { initStudio } = await import('./specimen.js');
-    studio = initStudio({ canvas: $('[data-studio-canvas]') });
-    studio.setSpecimen({ grade: gradeSel, form: formSel });
-    const figs = $$('[data-shot]');
-    const shots = studio.shoot(figs.map((f) => f.dataset.shot));
-    figs.forEach((f) => {
-      const src = shots[f.dataset.shot]; if (!src) return;
-      const img = new Image(); img.alt = ''; img.decoding = 'async'; img.src = src;
-      img.onload = () => { f.innerHTML = ''; f.appendChild(img); };
-    });
-  } catch (err) {
-    console.warn('Studio unavailable', err);
-    html.classList.add('no-studio');
-  }
-}
-const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 400));
-const studioIO = new IntersectionObserver(([en]) => { if (en.isIntersecting) { studioIO.disconnect(); idle(bootStudio, { timeout: 1200 }); } }, { rootMargin: '1200px 0px' });
-studioIO.observe($('#products'));
+const catalog = initCatalog({ waLink, scrollToEl, lenis, reduced, canUse3D, BUSINESS });
 
 /* =========================================================
    EMBERS (why section)
@@ -646,6 +550,7 @@ function enquiryLines() {
     ['Product', v('#f-product')], ['Grade / spec', v('#f-grade')], ['Form', ft], ['Size', v('#f-size')], ['Quantity', v('#f-qty')],
     ['Delivery location', v('#f-loc')], ['Required by', v('#f-date')], ['Message', v('#f-msg')],
   ].filter((l) => l[1]).map((l) => `${l[0]}: ${l[1]}`);
+  if (catalog.count) lines.push('', 'Enquiry list:', ...catalog.listLines());
   if (fileInput.files[0]) lines.push('', 'I will share my drawing / specification in this chat.');
   return lines;
 }

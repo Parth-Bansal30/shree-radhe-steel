@@ -111,6 +111,7 @@
           <li class="nav__menu-cta"><a class="btn btn--sun" href="#quote">Request a quotation</a></li>
         </ul>
       </nav>
+      <button class="hdr__list" type="button" data-list-open aria-label="Open enquiry list"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-list"/></svg><span class="hdr__list-label">Enquiry list</span><b data-list-count>0</b></button>
       <a class="hdr__call" href="tel:+919911194545" aria-label="Call +91 99111 94545"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg><span>99111 94545</span></a>
       <a class="btn btn--sun btn--sm hdr__cta" href="#quote">Get a quote</a>
     </div>
@@ -120,7 +121,7 @@
     <!-- ================= STORY (3D) ================= -->
     <section class="story" id="top" data-story aria-label="Introduction">
       <div class="hud" aria-hidden="true">
-        <div class="hud__count mono"><b data-hud-num>00</b><span>/ 05</span></div>
+        <div class="hud__count mono"><b data-hud-num>00</b><span>/ 06</span></div>
         <div class="hud__label mono" data-hud-label>Shree Radhe Steel</div>
         <div class="hud__track"><i data-hud-bar></i></div>
       </div>
@@ -196,7 +197,16 @@
 
       <article class="chapter" data-chapter="5">
         <div class="chapter__text">
-          <p class="chapter__num mono">05 · Delivery</p>
+          <p class="chapter__num mono">05 · Loading</p>
+          <h2 class="chapter__title">Counted, checked, then loaded.</h2>
+          <!-- VERIFY: confirm this description of the loading routine with the business -->
+          <p>Before dispatch, the material is matched to your order: grade, section, size and quantity. Then it is loaded for the journey.</p>
+        </div>
+      </article>
+
+      <article class="chapter" data-chapter="6">
+        <div class="chapter__text">
+          <p class="chapter__num mono">06 · Delivery</p>
           <h2 class="chapter__title">Dispatched to wherever the job is.</h2>
           <p>After advance payment, we arrange collection, dispatch or delivery to your location anywhere in India. Timing is confirmed for each order.</p>
           <a class="btn btn--sun" href="#quote">Start an enquiry <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a>
@@ -230,51 +240,51 @@
         <div class="products__viewport">
           <ul class="products__track" role="list" data-track>
             <!-- Studio images are rendered in the browser from 3D models; replace with real photos later (keep data-shot) -->
-            <li class="pcard" data-tilt><figure class="pcard__media" data-shot="alloy-plates"><svg viewBox="0 0 160 90" aria-hidden="true"><use href="#p-plate-thick"/></svg></figure>
+            <li class="pcard" data-tilt><figure class="pcard__media" data-shot="alloy-plates"><svg viewBox="0 0 160 90" aria-hidden="true"><use href="#p-plate-thick"/></svg><button class="pcard__more mono" type="button" data-product-open="alloy-plates"><span class="sr-only">Alloy steel plates: </span>Details <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg></button></figure>
               <p class="pcard__idx mono">01</p><h3>Alloy steel plates</h3>
               <p class="pcard__use">Machine parts, tooling, dies and heavy-duty fabrication.</p>
               <p class="pcard__spec mono">Multiple grades · thin to thick · confirmed on enquiry</p>
-              <div class="pcard__actions"><a class="btn btn--glass btn--sm" data-ask="Alloy steel plates" href="https://wa.me/919911194545" target="_blank" rel="noopener">Ask for availability</a><a class="btn btn--line btn--sm" data-quote="Alloy steel plates" href="#quote">Request a quotation</a></div></li>
-            <li class="pcard" data-tilt><figure class="pcard__media" data-shot="steel-plates"><svg viewBox="0 0 160 90" aria-hidden="true"><use href="#p-plate"/></svg></figure>
+              <div class="pcard__actions"><a class="btn btn--glass btn--sm" data-ask="Alloy steel plates" href="https://wa.me/919911194545" target="_blank" rel="noopener">Ask for availability</a><button class="btn btn--line btn--sm" type="button" data-add-product="alloy-plates"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg> Add to list</button></div></li>
+            <li class="pcard" data-tilt><figure class="pcard__media" data-shot="steel-plates"><svg viewBox="0 0 160 90" aria-hidden="true"><use href="#p-plate"/></svg><button class="pcard__more mono" type="button" data-product-open="steel-plates"><span class="sr-only">Steel plates: </span>Details <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg></button></figure>
               <p class="pcard__idx mono">02</p><h3>Steel plates</h3>
               <p class="pcard__use">Fabrication, base plates, structural and general engineering work.</p>
               <p class="pcard__spec mono">Multiple grades · thin to thick · confirmed on enquiry</p>
-              <div class="pcard__actions"><a class="btn btn--glass btn--sm" data-ask="Steel plates" href="https://wa.me/919911194545" target="_blank" rel="noopener">Ask for availability</a><a class="btn btn--line btn--sm" data-quote="Steel plates" href="#quote">Request a quotation</a></div></li>
-            <li class="pcard" data-tilt><figure class="pcard__media" data-shot="flats"><svg viewBox="0 0 160 90" aria-hidden="true"><use href="#p-flat"/></svg></figure>
+              <div class="pcard__actions"><a class="btn btn--glass btn--sm" data-ask="Steel plates" href="https://wa.me/919911194545" target="_blank" rel="noopener">Ask for availability</a><button class="btn btn--line btn--sm" type="button" data-add-product="steel-plates"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg> Add to list</button></div></li>
+            <li class="pcard" data-tilt><figure class="pcard__media" data-shot="flats"><svg viewBox="0 0 160 90" aria-hidden="true"><use href="#p-flat"/></svg><button class="pcard__more mono" type="button" data-product-open="flats"><span class="sr-only">Flats: </span>Details <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg></button></figure>
               <p class="pcard__idx mono">03</p><h3>Flats</h3>
               <p class="pcard__use">Brackets, frames, supports, machine parts and general fabrication.</p>
               <p class="pcard__spec mono">Multiple widths &amp; thicknesses · confirmed on enquiry</p>
-              <div class="pcard__actions"><a class="btn btn--glass btn--sm" data-ask="Flats" href="https://wa.me/919911194545" target="_blank" rel="noopener">Ask for availability</a><a class="btn btn--line btn--sm" data-quote="Flats" href="#quote">Request a quotation</a></div></li>
-            <li class="pcard" data-tilt><figure class="pcard__media" data-shot="rounds"><svg viewBox="0 0 160 90" aria-hidden="true"><use href="#p-round"/></svg></figure>
+              <div class="pcard__actions"><a class="btn btn--glass btn--sm" data-ask="Flats" href="https://wa.me/919911194545" target="_blank" rel="noopener">Ask for availability</a><button class="btn btn--line btn--sm" type="button" data-add-product="flats"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg> Add to list</button></div></li>
+            <li class="pcard" data-tilt><figure class="pcard__media" data-shot="rounds"><svg viewBox="0 0 160 90" aria-hidden="true"><use href="#p-round"/></svg><button class="pcard__more mono" type="button" data-product-open="rounds"><span class="sr-only">Round bars: </span>Details <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg></button></figure>
               <p class="pcard__idx mono">04</p><h3>Round bars</h3>
               <p class="pcard__use">Shafts, pins, bushes, fasteners and turned components.</p>
               <p class="pcard__spec mono">Multiple diameters &amp; grades · confirmed on enquiry</p>
-              <div class="pcard__actions"><a class="btn btn--glass btn--sm" data-ask="Round bars" href="https://wa.me/919911194545" target="_blank" rel="noopener">Ask for availability</a><a class="btn btn--line btn--sm" data-quote="Round bars" href="#quote">Request a quotation</a></div></li>
-            <li class="pcard" data-tilt><figure class="pcard__media" data-shot="bars"><svg viewBox="0 0 160 90" aria-hidden="true"><use href="#p-bars"/></svg></figure>
+              <div class="pcard__actions"><a class="btn btn--glass btn--sm" data-ask="Round bars" href="https://wa.me/919911194545" target="_blank" rel="noopener">Ask for availability</a><button class="btn btn--line btn--sm" type="button" data-add-product="rounds"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg> Add to list</button></div></li>
+            <li class="pcard" data-tilt><figure class="pcard__media" data-shot="bars"><svg viewBox="0 0 160 90" aria-hidden="true"><use href="#p-bars"/></svg><button class="pcard__more mono" type="button" data-product-open="bars"><span class="sr-only">Bars: </span>Details <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg></button></figure>
               <p class="pcard__idx mono">05</p><h3>Bars</h3>
               <p class="pcard__use">Machining stock and general engineering components.</p>
               <p class="pcard__spec mono">Multiple sections &amp; grades · confirmed on enquiry</p>
-              <div class="pcard__actions"><a class="btn btn--glass btn--sm" data-ask="Bars" href="https://wa.me/919911194545" target="_blank" rel="noopener">Ask for availability</a><a class="btn btn--line btn--sm" data-quote="Bars" href="#quote">Request a quotation</a></div></li>
-            <li class="pcard" data-tilt><figure class="pcard__media" data-shot="squares"><svg viewBox="0 0 160 90" aria-hidden="true"><use href="#p-square"/></svg></figure>
+              <div class="pcard__actions"><a class="btn btn--glass btn--sm" data-ask="Bars" href="https://wa.me/919911194545" target="_blank" rel="noopener">Ask for availability</a><button class="btn btn--line btn--sm" type="button" data-add-product="bars"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg> Add to list</button></div></li>
+            <li class="pcard" data-tilt><figure class="pcard__media" data-shot="squares"><svg viewBox="0 0 160 90" aria-hidden="true"><use href="#p-square"/></svg><button class="pcard__more mono" type="button" data-product-open="squares"><span class="sr-only">Square bars: </span>Details <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg></button></figure>
               <p class="pcard__idx mono">06</p><h3>Square bars</h3>
               <p class="pcard__use">Machined parts, keys, tooling and structural components.</p>
               <p class="pcard__spec mono">Multiple sections &amp; grades · confirmed on enquiry</p>
-              <div class="pcard__actions"><a class="btn btn--glass btn--sm" data-ask="Square bars" href="https://wa.me/919911194545" target="_blank" rel="noopener">Ask for availability</a><a class="btn btn--line btn--sm" data-quote="Square bars" href="#quote">Request a quotation</a></div></li>
-            <li class="pcard" data-tilt><figure class="pcard__media" data-shot="blocks"><svg viewBox="0 0 160 90" aria-hidden="true"><use href="#p-block"/></svg></figure>
+              <div class="pcard__actions"><a class="btn btn--glass btn--sm" data-ask="Square bars" href="https://wa.me/919911194545" target="_blank" rel="noopener">Ask for availability</a><button class="btn btn--line btn--sm" type="button" data-add-product="squares"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg> Add to list</button></div></li>
+            <li class="pcard" data-tilt><figure class="pcard__media" data-shot="blocks"><svg viewBox="0 0 160 90" aria-hidden="true"><use href="#p-block"/></svg><button class="pcard__more mono" type="button" data-product-open="blocks"><span class="sr-only">Square &amp; steel blocks: </span>Details <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg></button></figure>
               <p class="pcard__idx mono">07</p><h3>Square &amp; steel blocks</h3>
               <p class="pcard__use">Die blocks, moulds, fixtures and heavy machining.</p>
               <p class="pcard__spec mono">Multiple block sizes &amp; grades · confirmed on enquiry</p>
-              <div class="pcard__actions"><a class="btn btn--glass btn--sm" data-ask="Square blocks / steel blocks" href="https://wa.me/919911194545" target="_blank" rel="noopener">Ask for availability</a><a class="btn btn--line btn--sm" data-quote="Square blocks" href="#quote">Request a quotation</a></div></li>
-            <li class="pcard" data-tilt><figure class="pcard__media" data-shot="imported"><svg viewBox="0 0 160 90" aria-hidden="true"><use href="#p-imported"/></svg></figure>
+              <div class="pcard__actions"><a class="btn btn--glass btn--sm" data-ask="Square blocks / steel blocks" href="https://wa.me/919911194545" target="_blank" rel="noopener">Ask for availability</a><button class="btn btn--line btn--sm" type="button" data-add-product="blocks"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg> Add to list</button></div></li>
+            <li class="pcard" data-tilt><figure class="pcard__media" data-shot="imported"><svg viewBox="0 0 160 90" aria-hidden="true"><use href="#p-imported"/></svg><button class="pcard__more mono" type="button" data-product-open="imported"><span class="sr-only">Imported materials: </span>Details <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg></button></figure>
               <p class="pcard__idx mono">08</p><h3>Imported materials</h3>
               <p class="pcard__use">Jobs that specify imported material or a particular grade.</p>
               <p class="pcard__spec mono">Origin &amp; certificates confirmed for each order</p>
-              <div class="pcard__actions"><a class="btn btn--glass btn--sm" data-ask="Imported materials" href="https://wa.me/919911194545" target="_blank" rel="noopener">Ask for availability</a><a class="btn btn--line btn--sm" data-quote="Imported materials" href="#quote">Request a quotation</a></div></li>
-            <li class="pcard" data-tilt><figure class="pcard__media" data-shot="local"><svg viewBox="0 0 160 90" aria-hidden="true"><use href="#p-local"/></svg></figure>
+              <div class="pcard__actions"><a class="btn btn--glass btn--sm" data-ask="Imported materials" href="https://wa.me/919911194545" target="_blank" rel="noopener">Ask for availability</a><button class="btn btn--line btn--sm" type="button" data-add-product="imported"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg> Add to list</button></div></li>
+            <li class="pcard" data-tilt><figure class="pcard__media" data-shot="local"><svg viewBox="0 0 160 90" aria-hidden="true"><use href="#p-local"/></svg><button class="pcard__more mono" type="button" data-product-open="local"><span class="sr-only">Locally sourced materials: </span>Details <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg></button></figure>
               <p class="pcard__idx mono">09</p><h3>Locally sourced materials</h3>
               <p class="pcard__use">Domestic stock for routine and repeat requirements.</p>
               <p class="pcard__spec mono">Multiple grades &amp; sizes · confirmed on enquiry</p>
-              <div class="pcard__actions"><a class="btn btn--glass btn--sm" data-ask="Locally sourced materials" href="https://wa.me/919911194545" target="_blank" rel="noopener">Ask for availability</a><a class="btn btn--line btn--sm" data-quote="Local materials" href="#quote">Request a quotation</a></div></li>
+              <div class="pcard__actions"><a class="btn btn--glass btn--sm" data-ask="Locally sourced materials" href="https://wa.me/919911194545" target="_blank" rel="noopener">Ask for availability</a><button class="btn btn--line btn--sm" type="button" data-add-product="local"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg> Add to list</button></div></li>
             <li class="pcard pcard--end">
               <p class="eyebrow mono">Not listed?</p>
               <h3>Send us the specification.</h3>
@@ -295,22 +305,26 @@
             <p class="eyebrow mono">Grade studio</p>
             <h2 class="title" id="grades-title" data-split>See the grade before you ask for it.</h2>
           </div>
-          <p class="lede">Pick a grade and a section to see it stamped and colour-marked on the bar end. Send the enquiry in one tap.</p>
+          <p class="lede">Browse <span data-grade-total>49</span> grades with their chemistry, heat treatment and equivalents. Compare up to three side by side, then add what you need to your enquiry list.</p>
         </header>
 
         <div class="studio">
           <div class="studio__browse">
             <div class="fams" role="tablist" aria-label="Steel families" data-fams></div>
-            <label class="gsearch">
-              <span class="sr-only">Search grades</span>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-              <input type="search" placeholder="Search EN24, D2, 1.2344, 4140…" data-gsearch autocomplete="off">
-            </label>
+            <div class="gtools">
+              <label class="gsearch">
+                <span class="sr-only">Search grades</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                <input type="search" placeholder="Search EN24, D2, 1.2344, 4140, SKD61…" data-gsearch autocomplete="off">
+              </label>
+              <div class="elfilter" role="group" aria-label="Contains element" data-elfilter></div>
+            </div>
+            <p class="gcount mono" data-gcount aria-live="polite"></p>
             <ul class="ggrid" role="list" data-ggrid></ul>
-            <p class="gempty" data-gempty hidden>No match in this list. You can still ask: we trade most common grades. <a data-ask-search href="https://wa.me/919911194545" target="_blank" rel="noopener">Ask on WhatsApp</a></p>
+            <p class="gempty" data-gempty hidden>No match in this library. You can still ask: we trade most common grades. <a data-ask-search href="https://wa.me/919911194545" target="_blank" rel="noopener">Ask on WhatsApp</a></p>
           </div>
 
-          <aside class="studio__panel glass" aria-live="polite" data-panel>
+          <aside class="studio__panel glass" data-panel data-lenis-prevent aria-label="Selected grade">
             <div class="studio__view">
               <canvas class="studio__canvas" data-studio-canvas aria-label="3D specimen of the selected grade. Drag to rotate."></canvas>
               <div class="studio__fallback" data-studio-fallback></div>
@@ -323,28 +337,68 @@
               <p class="studio__hint mono" data-studio-hint>Drag to rotate</p>
             </div>
             <div class="studio__info">
-              <p class="mono studio__fam" data-g-fam>Alloy steel</p>
-              <h3 class="studio__code"><span data-g-code>EN24</span> <small data-g-aka></small></h3>
-              <p class="studio__eq mono" data-g-eq></p>
-              <p class="studio__use" data-g-use></p>
-              <div class="studio__cols">
+              <div class="studio__top">
                 <div>
-                  <p class="mono studio__k">Key alloying elements</p>
-                  <ul class="elements" role="list" data-g-el></ul>
+                  <p class="mono studio__fam" data-g-fam>Alloy steel</p>
+                  <h3 class="studio__code"><span data-g-code>EN24</span> <small data-g-aka></small></h3>
+                  <p class="studio__std mono" data-g-std></p>
                 </div>
-                <div>
-                  <p class="mono studio__k">Relative character <span class="tip" title="Relative comparison for browsing only. Not specification values; depends on heat treatment and supply condition.">ⓘ</span></p>
-                  <svg class="radar" viewBox="0 0 220 200" data-g-radar role="img" aria-label="Relative property chart"></svg>
+                <div class="studio__tools">
+                  <button class="iconbtn" type="button" data-g-compare aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-compare"/></svg><span data-g-compare-label>Compare</span></button>
+                  <button class="iconbtn" type="button" data-g-share><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg><span>Copy link</span></button>
                 </div>
               </div>
+              <div class="gtabs" role="tablist" aria-label="Grade details" data-gtabs>
+                <button type="button" role="tab" id="gt-over" aria-controls="gp-over" aria-selected="true" data-gtab="over">Overview</button>
+                <button type="button" role="tab" id="gt-chem" aria-controls="gp-chem" aria-selected="false" tabindex="-1" data-gtab="chem">Chemistry</button>
+                <button type="button" role="tab" id="gt-heat" aria-controls="gp-heat" aria-selected="false" tabindex="-1" data-gtab="heat">Heat treatment</button>
+                <button type="button" role="tab" id="gt-eq" aria-controls="gp-eq" aria-selected="false" tabindex="-1" data-gtab="eq">Equivalents</button>
+              </div>
+              <div class="gpane" role="tabpanel" id="gp-over" aria-labelledby="gt-over" data-gpane="over">
+                <p class="studio__use" data-g-use></p>
+                <p class="mono studio__k">Typical applications</p>
+                <ul class="tags" role="list" data-g-apps></ul>
+                <div class="studio__cols">
+                  <div>
+                    <p class="mono studio__k">Key alloying elements</p>
+                    <ul class="elements" role="list" data-g-el></ul>
+                  </div>
+                  <div>
+                    <p class="mono studio__k">Relative character <span class="tip" title="Relative comparison for browsing only. Not specification values; depends on heat treatment and supply condition.">ⓘ</span></p>
+                    <svg class="radar" viewBox="0 0 220 200" data-g-radar role="img" aria-label="Relative property chart"></svg>
+                  </div>
+                </div>
+              </div>
+              <div class="gpane" role="tabpanel" id="gp-chem" aria-labelledby="gt-chem" data-gpane="chem" hidden>
+                <div class="chem">
+                  <figure class="chem__ring" data-g-ring></figure>
+                  <table class="chem__table" data-g-chem>
+                    <thead><tr><th scope="col">Element</th><th scope="col">Weight %</th><th scope="col"><span class="sr-only">Range on scale</span></th></tr></thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+                <p class="chem__note" data-g-chem-note></p>
+              </div>
+              <div class="gpane" role="tabpanel" id="gp-heat" aria-labelledby="gt-heat" data-gpane="heat" hidden>
+                <dl class="htlist" data-g-ht></dl>
+                <div data-g-hard-wrap>
+                  <p class="mono studio__k">Typical hardness or strength</p>
+                  <dl class="htlist" data-g-hard></dl>
+                </div>
+                <p class="chem__note">Typical values, for orientation only. Follow the mill's or your heat-treater's recommendations for each lot.</p>
+              </div>
+              <div class="gpane" role="tabpanel" id="gp-eq" aria-labelledby="gt-eq" data-gpane="eq" hidden>
+                <table class="eqtable" data-g-eqt></table>
+                <p class="chem__note">Approximate cross-references between standards. Check the exact chemistry before substituting one grade for another.</p>
+              </div>
               <div class="studio__actions">
-                <a class="btn btn--sun" data-g-wa href="https://wa.me/919911194545" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg> <span data-g-wa-label>Ask for EN24</span></a>
-                <a class="btn btn--line" data-g-quote href="#quote">Add to quotation</a>
+                <button class="btn btn--sun" type="button" data-g-add><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg> <span data-g-add-label>Add to enquiry list</span></button>
+                <a class="btn btn--wa" data-g-wa href="https://wa.me/919911194545" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg> <span data-g-wa-label>Ask for EN24</span></a>
               </div>
             </div>
           </aside>
         </div>
-        <p class="note"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-info"/></svg> Indicative list of commonly requested grades. Equivalents are approximate cross-references, bar-end colours are illustrative, and the relative chart is for browsing only. Availability, size, origin and certificates are confirmed for every enquiry.</p>
+        <p class="note"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-info"/></svg> A reference library of commonly traded grades, not a stock list. Chemistry follows the standard named on each grade; actual heat analysis is on the mill test certificate. Equivalents are approximate, bar-end colours are illustrative, and the relative chart is for browsing only. Availability, size, origin and certificates are confirmed for every enquiry.</p>
       </div>
     </section>
 
@@ -527,6 +581,11 @@
               </label>
               <p class="field__error" id="e-file"></p>
             </div>
+            <div class="flist" data-flist hidden>
+              <div class="flist__head"><span class="label">From your enquiry list</span><button class="textbtn" type="button" data-list-open>Edit list</button></div>
+              <ol class="flist__items" data-flist-items></ol>
+              <input type="hidden" name="enquiry_list" data-flist-field>
+            </div>
             <div class="field"><label for="f-msg">Message</label><textarea id="f-msg" name="message" rows="3"></textarea></div>
           </fieldset>
 
@@ -598,6 +657,69 @@
     <div class="container ftr__base mono"><span>© <span data-year>2026</span> Shree Radhe Steel Industries</span><span>Preview build · content under review</span></div>
   </footer>
 
+  <!-- Compare tray -->
+  <div class="ctray glass" data-ctray hidden>
+    <ul class="ctray__items" role="list" data-ctray-items></ul>
+    <button class="btn btn--sun btn--sm" type="button" data-cmp-open>Compare</button>
+    <button class="ctray__clear" type="button" data-cmp-clear aria-label="Clear comparison"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-close"/></svg></button>
+  </div>
+
+  <!-- Compare dialog -->
+  <dialog class="sheet cmp" data-cmp aria-labelledby="cmp-title">
+    <div class="sheet__head">
+      <div><p class="eyebrow mono">Grade studio</p><h2 id="cmp-title">Compare grades</h2></div>
+      <button class="sheet__close" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-close"/></svg></button>
+    </div>
+    <div class="cmp__scroll"><table class="cmp__table" data-cmp-table></table></div>
+    <p class="chem__note">Weight %, as published in each grade's standard. Bars show each range on a common scale for that element. Equivalents are approximate.</p>
+  </dialog>
+
+  <!-- Product details -->
+  <dialog class="sheet pdlg" data-pdlg aria-labelledby="pd-title">
+    <button class="sheet__close" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-close"/></svg></button>
+    <div class="pdlg__media" data-pd-media></div>
+    <div class="pdlg__body">
+      <p class="eyebrow mono" data-pd-idx>Product</p>
+      <h2 id="pd-title" data-pd-title></h2>
+      <p class="pdlg__use" data-pd-use></p>
+      <div class="pdlg__grid">
+        <div><p class="mono studio__k">Sections</p><ul class="tags" role="list" data-pd-forms></ul></div>
+        <div><p class="mono studio__k">Steel families</p><ul class="tags" role="list" data-pd-fams></ul></div>
+      </div>
+      <p class="mono studio__k">Related grades in the library</p>
+      <ul class="gtags" role="list" data-pd-grades></ul>
+      <p class="mono studio__k">To quote quickly, tell us</p>
+      <ul class="checks" role="list" data-pd-tell></ul>
+      <div class="pdlg__actions">
+        <button class="btn btn--sun" type="button" data-pd-add><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg> Add to enquiry list</button>
+        <a class="btn btn--wa" data-pd-wa href="https://wa.me/919911194545" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg> Ask on WhatsApp</a>
+      </div>
+      <p class="chem__note">Grades, sizes and availability are confirmed for each enquiry.</p>
+    </div>
+  </dialog>
+
+  <!-- Enquiry list -->
+  <dialog class="sheet drawer" data-list aria-labelledby="list-title">
+    <div class="sheet__head">
+      <div><p class="eyebrow mono">Your enquiry</p><h2 id="list-title">Enquiry list</h2></div>
+      <button class="sheet__close" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-close"/></svg></button>
+    </div>
+    <p class="drawer__lede">Add sizes and quantities if you know them, then send the whole list in one message. The list stays on this device until you clear it.</p>
+    <ol class="litems" data-litems></ol>
+    <div class="drawer__empty" data-lempty>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-list"/></svg>
+      <p>Your list is empty. Add grades from the <a href="#grades" data-close-nav>grade studio</a> or products from the <a href="#products" data-close-nav>catalogue</a>.</p>
+    </div>
+    <div class="drawer__foot" data-lfoot>
+      <a class="btn btn--wa" data-list-wa href="https://wa.me/919911194545" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg> Send on WhatsApp</a>
+      <a class="btn btn--line" data-list-mail href="mailto:shreeradhe.steel.alloys@gmail.com"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-mail"/></svg> Email</a>
+      <button class="btn btn--sun" type="button" data-list-form>Continue to quotation form <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+      <button class="textbtn" type="button" data-list-clear>Clear list</button>
+    </div>
+  </dialog>
+
+  <div class="toast" role="status" aria-live="polite" data-toast hidden><span data-toast-text></span><button class="textbtn" type="button" data-toast-action hidden></button></div>
+
   <nav class="actionbar" aria-label="Quick contact">
     <a href="tel:+919911194545"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg>Call</a>
     <a data-wa="Hello Shree Radhe Steel," href="https://wa.me/919911194545" target="_blank" rel="noopener" class="is-wa"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg>WhatsApp</a>
@@ -629,6 +751,13 @@
     <symbol id="i-globe" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></g></symbol>
     <symbol id="i-route" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="5" cy="18" r="2.5"/><circle cx="19" cy="6" r="2.5"/><path d="M7.5 18H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h7.5" stroke-dasharray="2 2.5"/></g></symbol>
     <symbol id="i-bolt" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" d="M13 2 4 14h7l-1 8 9-12h-7z"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M9 6h11M9 12h11M9 18h11M4 6h.5M4 12h.5M4 18h.5"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-compare" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M8 4v16M16 4v16M3 8h5M16 16h5M3 16h5M16 8h5"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
     <symbol id="i-chat" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" d="M4 4h16v12H9l-5 4zM8 9h8M8 12h5"/></symbol>
 
     <!-- product profiles -->

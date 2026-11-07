@@ -4,7 +4,7 @@
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import * as F from './forms.js';
-import { FAMILIES } from './grades.js';
+import { FAMILIES, stampSub } from './grades.js';
 
 const FINISH = {
   carbon:    { color: 0xaab1b9, roughness: 0.38 },
@@ -83,7 +83,7 @@ export function initStudio({ canvas }) {
       const fin = FINISH[grade.fam] || FINISH.alloy;
       bodyMat.color.setHex(fin.color); bodyMat.roughness = fin.roughness;
       const fam = FAMILIES.find((f) => f.id === grade.fam);
-      F.drawEndFace(endCanvas, grade.code, grade.paint, { sub: grade.sub || grade.eq?.[0], light: grade.fam === 'stainless' ? '#f1f4f7' : '#d9dee4', dark: grade.fam === 'tool' ? '#6f7884' : '#8c949e' });
+      F.drawEndFace(endCanvas, grade.code, grade.paint, { sub: stampSub(grade), light: grade.fam === 'stainless' ? '#f1f4f7' : '#d9dee4', dark: grade.fam === 'tool' ? '#6f7884' : '#8c949e' });
       endTex.needsUpdate = true;
       paintMat.color.set(grade.paint);
       void fam;
@@ -93,14 +93,14 @@ export function initStudio({ canvas }) {
   build('round');
 
   /* ---------- Interaction ---------- */
-  let yaw = 0.95, pitch = 0.3, targetYaw = yaw, dragging = false, lastX = 0, lastY = 0, autoSpin = true, needsRender = true;
+  let yaw = 0.95, pitch = 0.3, targetYaw = yaw, baseYaw = yaw, swayT = 0, dragging = false, lastX = 0, lastY = 0, autoSpin = true, needsRender = true;
   canvas.addEventListener('pointerdown', (e) => { dragging = true; autoSpin = false; lastX = e.clientX; lastY = e.clientY; canvas.setPointerCapture(e.pointerId); });
   canvas.addEventListener('pointermove', (e) => {
     if (!dragging) return;
     targetYaw += (e.clientX - lastX) * 0.01; pitch = Math.min(0.9, Math.max(0.05, pitch + (e.clientY - lastY) * 0.005));
     lastX = e.clientX; lastY = e.clientY; needsRender = true;
   });
-  const end = () => { dragging = false; setTimeout(() => { autoSpin = true; }, 2500); };
+  const end = () => { dragging = false; setTimeout(() => { baseYaw = 0.95 + Math.round((targetYaw - 0.95) / (Math.PI * 2)) * Math.PI * 2; swayT = 0; autoSpin = true; }, 2500); };
   canvas.addEventListener('pointerup', end); canvas.addEventListener('pointercancel', end);
 
   function resize() {
@@ -115,7 +115,7 @@ export function initStudio({ canvas }) {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   function loop() {
     raf = requestAnimationFrame(loop);
-    if (autoSpin && !reduce) { targetYaw += 0.0035; needsRender = true; }
+    if (autoSpin && !reduce) { swayT += 0.006; targetYaw = baseYaw + Math.sin(swayT) * 0.55; needsRender = true; } // sway around the stamped end
     yaw += (targetYaw - yaw) * 0.12;
     if (!needsRender && Math.abs(targetYaw - yaw) < 0.0005) return;
     needsRender = false;

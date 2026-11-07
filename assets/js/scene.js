@@ -8,13 +8,13 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import * as F from './forms.js';
-import { STORY_GRADES, gradeByCode } from './grades.js';
+import { STORY_GRADES, gradeByCode, stampSub } from './grades.js';
+import { createYard } from './yard.js';
 
 const lerp = (a, b, t) => a + (b - a) * t;
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
 const smooth = (a, b, v) => { const t = clamp01((v - a) / (b - a)); return t * t * (3 - 2 * t); };
 const easeOut = (t) => 1 - Math.pow(1 - t, 3);
-const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
 const SUN = new THREE.Vector3(0.3, 0.12, -1).normalize();
 const R = 0.62;   // hero bar radius
@@ -206,7 +206,7 @@ export async function initWorld({ canvas, state, lite = false, onProgress = () =
     if (i === gradeIdx) return;
     gradeIdx = i;
     const g = gradeByCode(STORY_GRADES[i]);
-    F.drawEndFace(endCanvas, g.code, g.paint, { sub: g.eq?.[0] });
+    F.drawEndFace(endCanvas, g.code, g.paint, { sub: stampSub(g) });
     endTex.needsUpdate = true;
     paintMat.color.set(g.paint);
     onGrade(g, i);
@@ -361,12 +361,13 @@ export async function initWorld({ canvas, state, lite = false, onProgress = () =
   const plates = F.plateStack(scale, {});
   const blocks = F.blockPair(scale);
   const roundsLift = rounds.userData.h;
+  // yard: [x, y, z, yaw]; truck: [x, y, z, yaw] in truck space. Items with `top` are loaded by the crane.
   const items = [
-    { obj: plates, yard: [-1.4, 0, -3.6, 0.12], truck: null },
-    { obj: rounds, yard: [2.4, roundsLift, -3.0, 0], truck: [0.62, 1.47 + roundsLift, -0.6, Math.PI / 2] },
-    { obj: flats, yard: [0.6, 0, -6.4, 0.25], truck: null },
-    { obj: squares, yard: [4.6, 0, -5.6, -0.25], truck: [0.62, 1.47, 4.5, Math.PI / 2] },
-    { obj: blocks, yard: [-6.3, 0, -0.4, 0.5], truck: [-0.6, 1.47, 5.4, 0] },
+    { obj: plates, yard: [-1.0, 0, -3.6, 0.12] },
+    { obj: rounds, yard: [2.6, roundsLift, -3.2, 0], truck: [0.62, 1.47 + roundsLift, -0.6, Math.PI / 2], top: roundsLift, len: 5 },
+    { obj: flats, yard: [0.4, 0, -6.6, 0.25] },
+    { obj: squares, yard: [4.4, 0, -6.0, -0.25], truck: [0.62, 1.47, 4.5, Math.PI / 2], top: 0.79, len: 4.6 },
+    { obj: blocks, yard: [-2.7, 0, -6.4, 0.5], truck: [-0.6, 1.47, 5.4, 0], top: 0.86, len: 1.1 },
   ];
   items.forEach((it, k) => {
     it.k = k;
@@ -374,9 +375,11 @@ export async function initWorld({ canvas, state, lite = false, onProgress = () =
     it.obj.rotation.y = it.yard[3];
     it.obj.visible = false;
     it.spin = new THREE.Euler((Math.random() - 0.5) * 1.4, (Math.random() - 0.5) * 2, (Math.random() - 0.5) * 1.4);
+    it.yardPos = new THREE.Vector3(); it.yardQuat = new THREE.Quaternion();
     scene.add(it.obj);
   });
-  const barItem = { obj: barGroup, yard: [0, BAR_Y, 0, 0], truck: [-0.6, 1.47 + R, 0.9, Math.PI / 2], k: 0 };
+  const barItem = { obj: barGroup, yard: [0, BAR_Y, 0, 0], truck: [-0.6, 1.47 + R, 0.9, Math.PI / 2], top: R, len: L, k: 0, yardPos: new THREE.Vector3(0, BAR_Y, 0), yardQuat: new THREE.Quaternion() };
+  const cargo = [barItem, items[1], items[3], items[4]];
 
   /* ---------- Truck (unbranded, illustrative) ---------- */
   const truck = new THREE.Group();
@@ -437,6 +440,9 @@ export async function initWorld({ canvas, state, lite = false, onProgress = () =
   truck.position.set(-5.2, 0, 60);
   truck.visible = false;
   scene.add(truck);
+
+  /* ---------- Crane + crew ---------- */
+  const yard = createYard({ scene, truck, cargo, barEnd: new THREE.Vector3(L / 2, BAR_Y, 0), lite });
   onProgress(0.8);
 
   /* ---------- Post ---------- */
@@ -446,6 +452,9 @@ export async function initWorld({ canvas, state, lite = false, onProgress = () =
     composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
     bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.4, 0.6, 1.05);
+    // bloom is soft by nature: blur at half resolution (about a quarter of the cost)
+    const fullSize = bloom.setSize.bind(bloom);
+    bloom.setSize = (w, h) => fullSize(Math.max(1, Math.round(w / 2)), Math.max(1, Math.round(h / 2)));
     composer.addPass(bloom);
     composer.addPass(new OutputPass());
   }
@@ -470,30 +479,38 @@ export async function initWorld({ canvas, state, lite = false, onProgress = () =
 
   /* ---------- Frame ---------- */
   const clock = new THREE.Clock();
-  const tmpV = new THREE.Vector3(), tmpQ = new THREE.Quaternion(), qYard = new THREE.Quaternion(), qTruck = new THREE.Quaternion(), up = new THREE.Vector3(0, 1, 0);
+  const tmpV = new THREE.Vector3(), tmpE = new THREE.Euler(), up = new THREE.Vector3(0, 1, 0);
   const look = new THREE.Vector3(), camPos = new THREE.Vector3(), right = new THREE.Vector3();
   const fogA = lin(SKY.gold.horizon).multiplyScalar(0.62), fogB = lin(SKY.dusk.horizon).multiplyScalar(0.9);
   let elapsed = 0, ema = 16, slowFor = 0, lastDrive = 0, wheelAngle = 0;
 
-  function placeItem(it, load, assemble) {
+  // Where each item sits in the yard (with the drop-in reveal). The crane takes over the loaded ones.
+  function yardPlace(it, assemble) {
     const o = it.obj;
-    // drop in
     const a = it === barItem ? 1 : easeOut(clamp01((assemble - it.k * 0.12) / 0.5));
     o.visible = it === barItem || a > 0.001;
-    const yardPos = tmpV.set(it.yard[0], lerp(it.yard[1] + 9, it.yard[1], a), it.yard[2]);
-    qYard.setFromEuler(new THREE.Euler(it.spin ? it.spin.x * (1 - a) : 0, it.yard[3] + (it.spin ? it.spin.y * (1 - a) : 0), it.spin ? it.spin.z * (1 - a) : 0));
-    if (!it.truck || load <= 0) { o.position.copy(yardPos); o.quaternion.copy(qYard); return; }
-    const l = easeInOut(clamp01((load - it.k * 0.1) / 0.6));
-    const target = new THREE.Vector3(...it.truck.slice(0, 3)); truck.localToWorld(target);
-    qTruck.setFromAxisAngle(up, it.truck[3]).premultiply(truck.quaternion);
-    o.position.lerpVectors(yardPos, target, l); o.position.y += Math.sin(Math.PI * l) * 2.6;
-    o.quaternion.slerpQuaternions(qYard, qTruck, l);
+    it.yardPos.set(it.yard[0], lerp(it.yard[1] + 9, it.yard[1], a), it.yard[2]);
+    it.yardQuat.setFromEuler(tmpE.set(it.spin ? it.spin.x * (1 - a) : 0, it.yard[3] + (it.spin ? it.spin.y * (1 - a) : 0), it.spin ? it.spin.z * (1 - a) : 0));
+    if (!it.top) { o.position.copy(it.yardPos); o.quaternion.copy(it.yardQuat); }
+  }
+
+  // Scroll values arrive in steps; ease them so motion has weight
+  const sm = {};
+  const RATE = { load: 3.2, truckIn: 3.6, drive: 3.6, assemble: 4, grade: 8 };
+  function smoothState(dt) {
+    for (const k in state) {
+      const v = state[k];
+      if (typeof v !== 'number') continue;
+      if (sm[k] === undefined || dt <= 0) { sm[k] = v; continue; }
+      sm[k] += (v - sm[k]) * (1 - Math.exp(-dt * (RATE[k] || 6.5)));
+    }
+    return sm;
   }
 
   function frame() {
     const dt = Math.min(clock.getDelta(), 0.05);
     elapsed += dt;
-    const s = state;
+    const s = smoothState(dt);
 
     // Sky / light mood
     const dusk = s.dusk;
@@ -501,8 +518,10 @@ export async function initWorld({ canvas, state, lite = false, onProgress = () =
     scene.fog.color.copy(fogA).lerp(fogB, dusk);
     scene.fog.near = lerp(40, 18, dusk); scene.fog.far = lerp(320, 140, dusk);
     sun.intensity = 3.0 * (1 - dusk * 0.85);
-    hemi.intensity = 0.55 * (1 - dusk * 0.6);
-    scene.environmentIntensity = lerp(1, 0.35, dusk);
+    // wide yard shots are backlit: lift the sky fill and reflections a little
+    const fillK = s.fill ?? 0.2;
+    hemi.intensity = 0.55 * (1 - dusk * 0.6) * (1 + fillK * 1.4);
+    scene.environmentIntensity = lerp(1, 0.35, dusk) * (1 + fillK * 0.45);
     renderer.toneMappingExposure = lerp(1.0, 0.85, dusk) * (s.exposure ?? 1);
     gridMat.uniforms.uGrid.value = s.grid;
     dustU.uTime.value = elapsed; dustU.uOpacity.value = 0.55 * (1 - dusk * 0.5);
@@ -521,7 +540,7 @@ export async function initWorld({ canvas, state, lite = false, onProgress = () =
     setGrade(Math.round(s.grade));
 
     // Stock + truck
-    const arrive = s.truckIn, load = s.load, drive = s.drive;
+    const arrive = s.truckIn, drive = s.drive;
     truck.visible = arrive > 0.001;
     const tz = lerp(70, -0.8, easeOut(arrive)) - Math.pow(drive, 2.2) * 420;
     truck.position.z = tz;
@@ -532,8 +551,8 @@ export async function initWorld({ canvas, state, lite = false, onProgress = () =
     bodyMats.forEach((m) => { m.opacity = m === glass ? fade * 0.95 : fade; m.depthWrite = fade > 0.5; });
     wire.opacity = Math.sin(Math.PI * smooth(0, 0.9, arrive)) * 0.9 + drive * 0;
     truck.updateMatrixWorld();
-    items.forEach((it) => placeItem(it, load, s.assemble));
-    placeItem(barItem, load, 1);
+    items.forEach((it) => yardPlace(it, s.assemble));
+    yard.update(dt, elapsed, s);
     barGroup.updateMatrixWorld();
 
     // heat glow + sparks follow the bar end

@@ -1,40 +1,48 @@
-# Shree Radhe Steel Industries: website (Phase 1)
+# Shree Radhe Steel Industries website
 
-Static site with no build step. Plain HTML/CSS/JS, with Three.js loaded from jsDelivr only on capable desktops.
+A static site with no build step: plain HTML, CSS and ES modules. Three.js, GSAP and Lenis load from public CDNs. The 3D yard only loads on devices with WebGL. Every other device gets a static backdrop with the same content.
 
 ```
-index.html            Homepage (all sections)
-assets/css/main.css   Design tokens + layout
-assets/js/main.js     Nav, reveals, open-now status, WhatsApp links, form, supply map, 3D loader
-assets/js/hero3d.js   Scroll-driven Three.js steel scene (lazy)
-privacy.html, thanks.html, 404.html
-robots.txt, sitemap.xml, site.webmanifest, netlify.toml
-docs/BRIEF.md         Sitemap, visual direction, design system, 3D concept, headline options
+index.html             The whole homepage: story, products, grade studio, ordering, contact, quotation form
+assets/css/site.css    Design tokens, layout, the studio, dialogs and responsive rules
+assets/js/app.js       Smooth scroll, the scroll-driven story (camera keyframes and chapter state), loader, nav, form wiring
+assets/js/scene.js     The 3D yard: hero bar, stock bundles, truck, lighting, bloom, adaptive quality
+assets/js/yard.js      Gantry crane and the crew (cutter, two carriers, truck helper, signaller, supervisor), with procedural walk and work poses
+assets/js/grades.js    Reference grade library: 49 grades with chemistry ranges, heat treatment, hardness, equivalents and uses
+assets/js/catalog.js   Grade studio (filters, tabs, composition ring, compare), product details, enquiry list, toast
+assets/js/specimen.js  3D specimen in the grade studio (lazy-loaded)
+assets/js/forms.js     Quotation form: Netlify Forms when hosted there, WhatsApp or email elsewhere
+docs/BRIEF.md          Original brief and design notes
+v1/                    Archived first version
 ```
 
 ## Run locally
 ```bash
 python3 -m http.server 4173 --directory website
 ```
-Open http://localhost:4173. On localhost the form shows a "Preview mode" notice instead of pretending to send.
+Then open http://localhost:4173. On localhost the form shows a preview notice and sends nothing.
 
-## Deploy (Netlify recommended: the form needs no server code or API keys)
-1. Push this folder to GitHub, then in Netlify choose **Add new site → Import from Git** and set the publish directory to `website` (or deploy this folder by drag-and-drop).
-2. Netlify detects the `quote` form automatically. In **Site → Forms → Form notifications**, add an email notification to `shreeradhe.steel.alloys@gmail.com`.
-3. Attach the domain, then replace every `https://www.example.com` in `index.html`, `sitemap.xml` and `robots.txt`.
-4. If you change an inline `<script>` in `index.html`, regenerate its sha256 hash in `netlify.toml` (Content-Security-Policy), or the browser will block it.
+## How the pieces connect
+- **Story.** The page's scroll position maps to a progress value from 0 to 7, one step per chapter. Camera keyframes (`K_WIDE` and `K_TALL` in `app.js`) and scene values such as `truckIn`, `load` and `drive` come from that value. The scene smooths them over time, so scrolling backwards replays the crane and crew in reverse.
+- **Enquiry list.** Visitors add grades and products, then fill in section, size and quantity. The list is saved in the visitor's own browser (`localStorage`, key `srs-enquiry-v1`). It can go out as one WhatsApp message or email, or be copied into the quotation form's hidden `enquiry_list` field.
+- **Deep links.** `#grade=EN24` opens the studio on that grade, and the "Copy link" button creates these links.
 
-## Placeholders still to replace
-Search the code for `PLACEHOLDER`, `TODO` and `VERIFY`.
+## Deploy
+- **GitHub Pages (current).** Pushing to `main` publishes the site. Pages cannot receive form posts, so the form hands the enquiry to WhatsApp or email instead.
+- **Netlify (recommended once you want form submissions in an inbox).** Import the repo and leave the publish directory as `.`. Then go to **Site → Forms → Notifications** and add `shreeradhe.steel.alloys@gmail.com`. `netlify.toml` already sets a strict Content-Security-Policy. If you edit either inline `<script>` in `index.html`, regenerate its sha256 hash in that file or the browser will block it.
+- No API keys or secrets are used anywhere in the site.
+
+## Still to replace or confirm
+Search the code for `PLACEHOLDER` and `VERIFY`.
 
 | Item | Where |
 |---|---|
-| Logo (currently a drawn "billet" monogram) | `index.html` header, `assets/img/favicon.svg` |
-| Founder / proprietor photos | `#story` |
-| Family quote (currently a draft line) | `#story` blockquote |
-| Google Maps embed (currently a styled placeholder + "Open in Google Maps" link) | `#contact` |
-| OG share image 1200×630 → `assets/img/og-image.jpg` | `<head>` |
-| Apple touch icon 180×180 → `assets/img/apple-touch-icon.png` | `<head>` |
-| PIN code (110063 or 110018), deliberately not shown anywhere | address blocks, JSON-LD |
-| Domain | canonical, OG, sitemap, robots, JSON-LD |
-| Product photos (optional; cards use drawn profiles today) | `.card__media` |
+| PIN code (110063 or 110018). It is deliberately not shown anywhere yet | address blocks, JSON-LD |
+| Grade library: confirm which grades are actually traded. It is labelled as a reference, not a stock list | `assets/js/grades.js` |
+| Product details and related grades | `assets/js/catalog.js` (`PRODUCTS`) |
+| Loading routine copy ("Counted, checked, then loaded.") | `index.html`, chapter 5 |
+| Number of units, founding year and first location | `#story` |
+| Logo, family photographs, family quote | header, `#story` |
+| Google Maps embed | `#contact` |
+| Share image (1200×630) and Apple touch icon | `<head>` |
+| Domain | canonical, OG tags, sitemap, robots, JSON-LD |
