@@ -193,7 +193,7 @@ const K_WIDE = [
   [6, 13, 20, -3.0, 0, -2.6, 0, 0, 0, 0, 0, 0],
   [11.5, 5.8, 17.5, -2.4, 1.9, 0.8, 0.02, 0, 0, 0, 0, 0],
   [7.5, 3.4, 16.5, -4.2, 1.5, 1, 0.05, 0, 0, 0, 0, 0],
-  [1.6, 2.4, 17.5, -5.2, 1.6, -30, 0.18, 0, 0, 0, 0, 0],
+  [-1.8, 2.5, 17.5, -5.2, 1.6, -30, 0.18, 0, 0, 0, 0, 0],
 ];
 const K_TALL = [
   [9.5, 2.8, 18.5, 0.4, -0.9, 0, 0, 0, 0.14, 0, 0, 0],
@@ -203,9 +203,9 @@ const K_TALL = [
   [14.5, 11, 19.5, -1.2, -1.6, -2.4, 0, 0, 0, 0, 0, 0],
   [9.5, 6.5, 19, -2.2, 0.6, 1.6, 0.02, 0, 0, 0, 0, 0],
   [8, 4.4, 19.5, -4.4, -0.2, 0, 0.05, 0, 0, 0, 0, 0],
-  [2.2, 2.8, 19, -5.2, 0.2, -30, 0.18, 0, 0, 0, 0, 0],
+  [-2.6, 3.0, 19, -5.2, 0.2, -30, 0.18, 0, 0, 0, 0, 0],
 ];
-const state = { fill: 0.2, follow: 0, grade: 0, assemble: 0, truckIn: 0, load: 0, drive: 0, exposure: 1, parallax: 1 };
+const state = { fill: 0.2, follow: 0, grade: 0, assemble: 0, truckIn: 0, load: 0, dismount: 0, drive: 0, exposure: 1, parallax: 1 };
 KEYS.forEach((k, i) => { state[k] = K_WIDE[0][i]; });
 let storyP = 0, activeCh = -1, world = null;
 
@@ -249,6 +249,7 @@ function applyState(p) {
   state.truckIn = smooth(4.05, 4.75, p);
   state.load = clamp01((p - 4.55) / 1.15);
   state.drive = clamp01((p - 5.9) / 0.95);
+  state.dismount = smooth(5.72, 5.92, p);
   state.follow = smooth(5.85, 6.5, p) * 0.9;
   state.fill = 0.2 + 0.7 * smooth(3.3, 4.0, p) - 0.35 * smooth(6.0, 6.8, p);
 }
@@ -322,11 +323,17 @@ async function boot3D() {
   const lite = innerWidth < 900 || (navigator.hardwareConcurrency || 8) <= 4;
   try {
     setLoad(0.1);
-    await Promise.race([document.fonts?.load('700 60px "JetBrains Mono"'), new Promise((r) => setTimeout(r, 1500))]);
+    // the bar-end stamp and the painted name board are drawn with these faces
+    await Promise.race([
+      Promise.all(['700 60px "JetBrains Mono"', '700 60px "Inter Tight"', '400 60px "Tiro Devanagari Hindi"'].map((f) => document.fonts?.load(f, f.includes('Tiro') ? 'श्री राधे' : 'A'))),
+      new Promise((r) => setTimeout(r, 1800)),
+    ]);
     const { initWorld } = await import('./scene.js');
     setLoad(0.2);
     world = await initWorld({ canvas: $('[data-world]'), state, lite, onProgress: (v) => setLoad(0.2 + v * 0.75), onGrade });
     html.classList.add('is-world');
+    // dev-only hook for frame-exact review renders (local preview only, never on a public host)
+    if (FORM_MODE === 'local' && new URLSearchParams(location.search).has('shot')) window.__srs = { world, state, applyState };
     storyTick();
     world.start();
     finishLoading();
@@ -400,27 +407,61 @@ addEventListener('load', () => ST?.refresh());
 const catalog = initCatalog({ waLink, scrollToEl, lenis, reduced, canUse3D, BUSINESS });
 
 /* =========================================================
-   EMBERS (why section)
+   MARIGOLD PETALS (why section): a few petals drift down, as at a temple doorway.
+   Paused off-screen; skipped entirely for reduced motion.
    ========================================================= */
 (() => {
-  const c = $('[data-embers]'); if (!c || reduced) return;
-  const g = c.getContext('2d'); let w = 0, h = 0, raf = 0;
-  const N = innerWidth < 700 ? 40 : 90;
-  const P = Array.from({ length: N }, () => ({ x: Math.random(), y: Math.random(), r: Math.random() * 1.8 + 0.4, s: Math.random() * 0.4 + 0.15, d: Math.random() * 6.28, a: Math.random() * 0.6 + 0.2 }));
-  const size = () => { w = c.width = c.offsetWidth; h = c.height = c.offsetHeight; };
-  size(); addEventListener('resize', size);
-  const draw = () => {
+  const c = $('[data-petals]'); if (!c || reduced) return;
+  const g = c.getContext('2d'); let w = 0, h = 0, raf = 0, dpr = 1, last = 0;
+  const N = innerWidth < 700 ? 14 : 26;
+  const COLS = [['#ffc444', '#f29a1c'], ['#ff9a3c', '#e8701a'], ['#ffd666', '#f4a62a'], ['#ff8a2a', '#e2620f'], ['#f29bb0', '#dc6f8c']];
+  const P = Array.from({ length: N }, (_, i) => ({
+    x: Math.random(), y: Math.random(), s: 0.75 + Math.random() * 0.7, v: 0.02 + Math.random() * 0.028,
+    a: Math.random() * 6.28, spin: (Math.random() - 0.5) * 1.6, sway: 0.6 + Math.random() * 1.2, ph: Math.random() * 6.28,
+    tilt: Math.random() * 6.28, c: COLS[i % 7 === 6 ? 4 : i % 4],
+  }));
+  const size = () => { dpr = Math.min(2, devicePixelRatio || 1); w = c.offsetWidth; h = c.offsetHeight; c.width = w * dpr; c.height = h * dpr; };
+  size(); addEventListener('resize', size, { passive: true });
+  const petal = (p, t) => {
+    const r = 10 * p.s, flip = Math.cos(p.tilt + t * 1.3); // petals turn over as they fall
+    g.save(); g.translate(p.x * w, p.y * h); g.rotate(p.a); g.scale(1, 0.35 + 0.65 * Math.abs(flip));
+    const grad = g.createLinearGradient(0, -r, 0, r); grad.addColorStop(0, p.c[0]); grad.addColorStop(1, p.c[1]);
+    g.fillStyle = grad; g.globalAlpha = 0.9;
+    g.beginPath(); g.moveTo(0, -r); g.bezierCurveTo(r * 0.9, -r * 0.6, r * 0.75, r * 0.7, 0, r); g.bezierCurveTo(-r * 0.75, r * 0.7, -r * 0.9, -r * 0.6, 0, -r); g.fill();
+    g.globalAlpha = 0.25; g.strokeStyle = '#fff3d6'; g.lineWidth = 0.8; g.beginPath(); g.moveTo(0, -r * 0.7); g.lineTo(0, r * 0.7); g.stroke();
+    g.restore();
+  };
+  const draw = (now) => {
     raf = requestAnimationFrame(draw);
-    g.clearRect(0, 0, w, h); g.globalCompositeOperation = 'lighter';
+    const dt = Math.min(0.05, last ? (now - last) / 1000 : 0.016); last = now; const t = now / 1000;
+    g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h);
     P.forEach((p) => {
-      p.y -= p.s / h * 2.2; p.d += 0.01; p.x += Math.sin(p.d) * 0.0004;
-      if (p.y < -0.02) { p.y = 1.02; p.x = Math.random(); }
-      const x = p.x * w, y = p.y * h, fade = Math.min(1, (1 - p.y) * 3) * Math.min(1, p.y * 4);
-      g.fillStyle = `rgba(255,${120 + p.r * 40 | 0},60,${p.a * 0.12 * fade})`; g.beginPath(); g.arc(x, y, p.r * 5, 0, 6.28); g.fill();
-      g.fillStyle = `rgba(255,${190 + p.r * 20 | 0},140,${p.a * fade})`; g.beginPath(); g.arc(x, y, p.r, 0, 6.28); g.fill();
+      p.y += p.v * dt * (900 / Math.max(500, h)); p.a += p.spin * dt;
+      p.x += Math.sin(t * 0.7 * p.sway + p.ph) * 0.012 * dt;
+      if (p.y > 1.04) { p.y = -0.04; p.x = Math.random(); }
+      petal(p, t);
     });
   };
-  new IntersectionObserver(([en]) => { if (en.isIntersecting && !raf) draw(); else if (!en.isIntersecting && raf) { cancelAnimationFrame(raf); raf = 0; } }).observe(c);
+  new IntersectionObserver(([en]) => { if (en.isIntersecting && !raf) { last = 0; raf = requestAnimationFrame(draw); } else if (!en.isIntersecting && raf) { cancelAnimationFrame(raf); raf = 0; } }).observe(c);
+})();
+
+/* =========================================================
+   LIVE MAP (contact): the Google Maps embed loads only when the section is near,
+   so visitors who never scroll that far never contact Google Maps.
+   ========================================================= */
+(() => {
+  const box = $('[data-map-frame]'); if (!box) return;
+  const load = () => {
+    if (box.querySelector('iframe')) return;
+    const f = document.createElement('iframe');
+    f.src = box.dataset.src; f.title = 'Map showing Shree Radhe Steel Industries, Vishnu Garden, New Delhi';
+    f.loading = 'lazy'; f.referrerPolicy = 'no-referrer-when-downgrade'; f.allowFullscreen = true;
+    f.addEventListener('load', () => box.classList.add('is-loaded'), { once: true });
+    box.appendChild(f);
+  };
+  if (!('IntersectionObserver' in window)) { load(); return; }
+  const io = new IntersectionObserver(([en]) => { if (en.isIntersecting) { io.disconnect(); load(); } }, { rootMargin: '900px 0px' });
+  io.observe(box);
 })();
 
 /* =========================================================

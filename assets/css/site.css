@@ -356,7 +356,7 @@ html:not(.js) .loader { display: none; }
 
 /* Why */
 .why { background: var(--night); padding: clamp(90px, 11vw, 150px) 0; overflow: hidden; }
-.embers { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
 .why::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 50%; background: radial-gradient(60% 100% at 50% 100%, rgba(255, 106, 26, 0.12), transparent 70%); pointer-events: none; }
 .sec-head { margin-bottom: 52px; max-width: 52rem; }
 .bento { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; position: relative; z-index: 1; }
@@ -604,7 +604,7 @@ html:not(.js) .loader { display: none; }
   .grain { display: none; }
 }
 @media print {
-  .world, .world-fallback, .grain, .hdr, .actionbar, .loader, .embers, .hud { display: none !important; }
+  .world, .world-fallback, .grain, .hdr, .actionbar, .loader, .petals, .hud { display: none !important; }
   body { background: #fff; color: #000; }
 }
 
@@ -913,3 +913,224 @@ dialog.drawer[open] { display: flex; flex-direction: column; animation: drawerIn
   .ggrid > li { scroll-snap-align: start; display: flex; }
   .ggrid > li > .gchip { width: 100%; }
 }
+
+
+/* =========================================================
+   v3 — Peacock & marigold
+   Night sections in deep peacock blue, day sections in ivory and sand, marigold for warmth.
+   Shree Radhe touches: invocation, lotus marks, a marigold toran, peacock-eye bullets.
+   ========================================================= */
+:root {
+  --ink: #05161a; --night: #071d22; --slate: #0a252b; --slate-2: #0e2d34; --deep: #061a1e;
+  --text: #f6f0e6; --muted: #aebfbd; --dim: #82999a; --silver: #e3e8e4; --steel: #97aaa9;
+  --sun: #f4a62a; --ember: #e8781e; --flame: #e2560f; --cyan: #7fd6cf;
+  --peacock: #0f6f74; --peacock-ink: #0b5a5e; --lotus: #e0708f; --leaf: #3e7d3c;
+  --paper: #f7f0e3; --paper-2: #efe5d2; --paper-ink: #1f1a13;
+  --line: rgba(246, 240, 230, 0.09); --line-2: rgba(246, 240, 230, 0.16);
+  --ff-serif: "Fraunces", Georgia, "Times New Roman", serif;
+  --ff-deva: "Tiro Devanagari Hindi", "Noto Serif Devanagari", "Mangal", serif;
+  --marigold: linear-gradient(180deg, #ffd47e, #f4a62a 55%, #e5841c);
+}
+::selection { background: #f4a62a; color: #1d1204; }
+
+/* buttons */
+.btn--sun { background: var(--marigold); color: #231503; box-shadow: 0 10px 30px -12px rgba(232, 120, 30, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.55); }
+.btn--sun:hover { box-shadow: 0 16px 44px -14px rgba(232, 120, 30, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.65); }
+.actionbar .is-sun { background: var(--marigold); color: #231503; }
+.nav__menu-cta a.btn { color: #231503; }
+
+/* chrome over the 3D story */
+.hdr__pill::before { background: rgba(5, 24, 29, 0.46); }
+.hdr[data-scrolled="true"] .hdr__pill::before { background: rgba(5, 24, 29, 0.8); }
+.story::before { background: linear-gradient(90deg, rgba(3, 17, 21, 0.74) 0%, rgba(3, 17, 21, 0.36) 32%, transparent 58%), linear-gradient(0deg, rgba(3, 17, 21, 0.5), transparent 30%); }
+.hero__title .ln--sun .wi, html:not(.js) .hero__title .ln--sun { background-image: linear-gradient(92deg, #ffe3a8 0%, #f4a62a 48%, #e8781e 100%); }
+.hero__lede { color: #d4dcd7; }
+.chapter__text p:not(.chapter__num) { color: #d0d8d3; }
+.world-fallback {
+  background:
+    radial-gradient(55% 38% at 64% 57%, rgba(255, 196, 110, 0.55), transparent 70%),
+    linear-gradient(180deg, #041a22 0%, #0d3a44 30%, #a9603a 54%, #f4a85a 60%, #2c2a24 61%, #0f1513 100%);
+}
+
+/* hero invocation */
+.invocation {
+  display: inline-flex; align-items: center; gap: 14px; margin-bottom: 16px;
+  font: 400 clamp(1rem, 1.3vw, 1.2rem)/1.2 var(--ff-deva); letter-spacing: 0.06em; color: #f6c46a;
+  text-shadow: 0 1px 18px rgba(0, 0, 0, 0.55);
+}
+.invocation::before, .invocation::after { content: ""; width: 34px; height: 1px; background: linear-gradient(90deg, transparent, rgba(246, 196, 106, 0.8)); }
+.invocation::after { transform: scaleX(-1); }
+
+/* loader: a lotus draws itself */
+.loader { background: radial-gradient(60% 50% at 50% 45%, #0b2a31, var(--ink) 70%); }
+.loader__lotus { width: 92px; height: 70px; overflow: visible; }
+.loader__lotus path { fill: none; stroke: url(#lotusStroke); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: lotusDraw 1.9s var(--ease-out) forwards; }
+.loader__lotus path:nth-child(2), .loader__lotus path:nth-child(3) { animation-delay: 0.18s; }
+.loader__lotus path:nth-child(4), .loader__lotus path:nth-child(5) { animation-delay: 0.36s; }
+.loader__lotus path:nth-child(6) { animation-delay: 0.6s; }
+@keyframes lotusDraw { to { stroke-dashoffset: 0; } }
+.loader__radhe { font: 400 1.35rem/1 var(--ff-deva); color: #f6c46a; letter-spacing: 0.04em; opacity: 0; animation: fadeUp 1.2s 0.5s var(--ease-out) forwards; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* toran: a string of marigolds where the night yard meets the day sections */
+.toran { position: absolute; left: 0; right: 0; top: 0; height: 50px; z-index: 2; pointer-events: none; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='50' viewBox='0 0 96 50'%3E%3Cpath d='M0 5 Q48 17 96 5' fill='none' stroke='%237a4b14' stroke-width='1'/%3E%3Ccircle cx='4' cy='6.0' r='4.3' fill='%23f4a62a'/%3E%3Ccircle cx='2.8' cy='4.7' r='1.4' fill='%23ffe3a3' opacity='.55'/%3E%3Ccircle cx='12' cy='7.6' r='4.3' fill='%23e8781e'/%3E%3Ccircle cx='10.8' cy='6.3' r='1.4' fill='%23ffe3a3' opacity='.55'/%3E%3Ccircle cx='20' cy='9.0' r='4.3' fill='%23f4a62a'/%3E%3Ccircle cx='18.8' cy='7.7' r='1.4' fill='%23ffe3a3' opacity='.55'/%3E%3Ccircle cx='28' cy='10.0' r='4.3' fill='%23e8781e'/%3E%3Ccircle cx='26.8' cy='8.7' r='1.4' fill='%23ffe3a3' opacity='.55'/%3E%3Ccircle cx='36' cy='10.6' r='4.3' fill='%23f4a62a'/%3E%3Ccircle cx='34.8' cy='9.3' r='1.4' fill='%23ffe3a3' opacity='.55'/%3E%3Ccircle cx='44' cy='11.0' r='4.3' fill='%23e8781e'/%3E%3Ccircle cx='42.8' cy='9.7' r='1.4' fill='%23ffe3a3' opacity='.55'/%3E%3Ccircle cx='52' cy='11.0' r='4.3' fill='%23f4a62a'/%3E%3Ccircle cx='50.8' cy='9.7' r='1.4' fill='%23ffe3a3' opacity='.55'/%3E%3Ccircle cx='60' cy='10.6' r='4.3' fill='%23e8781e'/%3E%3Ccircle cx='58.8' cy='9.3' r='1.4' fill='%23ffe3a3' opacity='.55'/%3E%3Ccircle cx='68' cy='10.0' r='4.3' fill='%23f4a62a'/%3E%3Ccircle cx='66.8' cy='8.7' r='1.4' fill='%23ffe3a3' opacity='.55'/%3E%3Ccircle cx='76' cy='9.0' r='4.3' fill='%23e8781e'/%3E%3Ccircle cx='74.8' cy='7.7' r='1.4' fill='%23ffe3a3' opacity='.55'/%3E%3Ccircle cx='84' cy='7.6' r='4.3' fill='%23f4a62a'/%3E%3Ccircle cx='82.8' cy='6.3' r='1.4' fill='%23ffe3a3' opacity='.55'/%3E%3Ccircle cx='92' cy='6.0' r='4.3' fill='%23e8781e'/%3E%3Ccircle cx='90.8' cy='4.7' r='1.4' fill='%23ffe3a3' opacity='.55'/%3E%3Cpath d='M48 15V40' stroke='%237a4b14' stroke-width='.8'/%3E%3Ccircle cx='48' cy='19' r='3.6' fill='%23e8781e'/%3E%3Ccircle cx='48' cy='26.5' r='3.6' fill='%23f4a62a'/%3E%3Ccircle cx='48' cy='34' r='3.6' fill='%23e8781e'/%3E%3Cpath d='M48 38c4 2 5 7 0 11c-5-4-4-9 0-11z' fill='%233e7d3c'/%3E%3Cpath d='M48 39v9' stroke='%232a5a29' stroke-width='.6'/%3E%3C/svg%3E") repeat-x 0 0 / 96px 50px; filter: drop-shadow(0 3px 3px rgba(80, 45, 5, 0.18)); }
+@media (max-width: 600px) { .toran { background-size: 76px 40px; height: 40px; } }
+
+/* ---------- Day sections ---------- */
+.is-light {
+  --text: #1f1a13; --muted: #574f43; --dim: #6a6155; --silver: #2a241b; --steel: #6a6155;
+  --sun: #9a4f04; --ember: #b8560f; --cyan: #0d6a6e;
+  --line: rgba(31, 26, 19, 0.1); --line-2: rgba(31, 26, 19, 0.18);
+  color: var(--text); background: var(--paper); color-scheme: light;
+}
+.is-light.is-sand { background: var(--paper-2); }
+.is-light + .is-light { border-top: 1px solid rgba(31, 26, 19, 0.07); }
+.is-light :focus-visible { outline-color: var(--peacock-ink); }
+.is-light .glass {
+  background: linear-gradient(180deg, rgba(255, 253, 248, 0.95), rgba(255, 250, 240, 0.78)); border-color: rgba(31, 26, 19, 0.09);
+  box-shadow: inset 0 1px 0 #fff, 0 1px 2px rgba(60, 40, 10, 0.05), 0 30px 60px -40px rgba(70, 45, 10, 0.45);
+  backdrop-filter: none; -webkit-backdrop-filter: none;
+}
+.is-light [data-glow]::before { background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(244, 166, 42, 0.16), transparent 60%); }
+.is-light .btn--glass, .is-light .btn--line { background: rgba(31, 26, 19, 0.035); border-color: rgba(31, 26, 19, 0.22); color: var(--text); backdrop-filter: none; -webkit-backdrop-filter: none; }
+.is-light .btn--glass:hover, .is-light .btn--line:hover { border-color: var(--sun); color: var(--sun); background: rgba(244, 166, 42, 0.1); }
+.is-light .btn--wa { background: #1fae55; color: #fff; }
+.is-light .textbtn:hover { color: var(--ember); }
+.is-light .eyebrow::before { content: ""; width: 14px; height: 14px; flex: none; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='%239a4f04' stroke-width='1.4' stroke-linejoin='round'%3E%3Cpath d='M12 3c2.6 3 2.6 8 0 12-2.6-4-2.6-9 0-12z'/%3E%3Cpath d='M12 15c-2.8-1-6-3.6-6.6-7.4 3.6.4 5.8 3 6.6 7.4zM12 15c2.8-1 6-3.6 6.6-7.4-3.6.4-5.8 3-6.6 7.4z'/%3E%3Cpath d='M12 16.5c-4 .4-8-1.2-9.5-4 3.6-.6 7 1 9.5 4zM12 16.5c4 .4 8-1.2 9.5-4-3.6-.6-7 1-9.5 4z'/%3E%3Cpath d='M6 20h12'/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat; }
+.is-light .eyebrow .dot + * { margin-left: 0; }
+/* fields */
+.is-light .field input, .is-light .field select, .is-light .field textarea, .is-light .lf input, .is-light .lf select { background: #fffdf8; border-color: rgba(31, 26, 19, 0.2); color: var(--text); }
+.is-light .field input::placeholder, .is-light .field textarea::placeholder { color: #7a7062; }
+.is-light .field select option { background: #fffdf8; color: var(--text); }
+.is-light .field select { background-image: linear-gradient(45deg, transparent 50%, #574f43 50%), linear-gradient(135deg, #574f43 50%, transparent 50%); background-position: calc(100% - 20px) 21px, calc(100% - 15px) 21px; background-size: 5px 5px; background-repeat: no-repeat; }
+.is-light .field input[type="date"] { color-scheme: light; }
+.is-light .field input:focus, .is-light .field select:focus, .is-light .field textarea:focus { border-color: var(--peacock); box-shadow: 0 0 0 3px rgba(15, 111, 116, 0.16); }
+.is-light .field.has-error input, .is-light .field.has-error select { border-color: #c0392b; }
+.is-light .field__error { color: #b42318; }
+.is-light .field label b { color: #b8560f; }
+.is-light .chips span { background: #fffdf8; }
+.is-light .chips input:checked + span { background: var(--text); color: var(--paper); border-color: var(--text); }
+.is-light .file { border-color: rgba(31, 26, 19, 0.26); background: rgba(255, 253, 248, 0.6); }
+.is-light .file.is-drag, .is-light .file:hover { background: rgba(244, 166, 42, 0.1); }
+.is-light .status { background: rgba(255, 253, 248, 0.8); }
+.is-light .status[data-type="success"] { border-color: rgba(21, 122, 60, 0.45); background: rgba(21, 122, 60, 0.07); }
+.is-light .flist { border-color: rgba(154, 79, 4, 0.3); background: rgba(244, 166, 42, 0.09); }
+.is-light .flist__items { color: var(--muted); }
+.is-light .openpill[data-state="open"] { color: #157a3c; border-color: rgba(21, 122, 60, 0.4); }
+
+/* statement: the family's voice, in a serif */
+.statement { background: var(--paper); color: var(--paper-ink); }
+.statement__text { font: 400 clamp(1.95rem, 4.6vw, 4.5rem)/1.1 var(--ff-serif); letter-spacing: -0.025em; font-variation-settings: "opsz" 144; }
+.statement__text .w { color: rgba(31, 26, 19, 0.13); }
+.statement__text .w.is-on { color: var(--paper-ink); }
+.statement__text em { font-style: italic; }
+.statement__text em .w.is-on { color: #b8560f; }
+.statement__facts { border-top-color: rgba(31, 26, 19, 0.14); }
+.statement__facts dt { color: #6a6155; }
+.statement__facts dd { font-family: var(--ff-serif); font-weight: 500; letter-spacing: -0.02em; }
+
+/* why: marigold petals drift down instead of embers */
+.petals { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.why.is-light::after { background: radial-gradient(60% 100% at 50% 100%, rgba(244, 166, 42, 0.16), transparent 70%); }
+.is-light .tile svg { color: var(--peacock); }
+.is-light .tile--big { background: radial-gradient(90% 70% at 100% 0%, rgba(244, 166, 42, 0.24), transparent 60%), linear-gradient(180deg, #fffdf8, #fbf3e3); }
+.is-light .tile__num { background: linear-gradient(180deg, #2a241b 30%, #8c6a3c); -webkit-background-clip: text; background-clip: text; }
+.is-light .tile__num sup { color: #b8560f; -webkit-text-fill-color: #b8560f; }
+.is-light .tile--big p:last-child { color: var(--muted); }
+
+/* family: peacock-eye timeline, warm photo frames */
+.is-light .timeline::before { background: linear-gradient(#e8a43c, rgba(31, 26, 19, 0.12)); }
+.timeline li::before { left: -2px; top: 5px; width: 15px; height: 15px; border: 0; background: radial-gradient(circle, #16306a 0 22%, #1aa3a0 24% 44%, #f0b13c 46% 62%, #3e7d3c 64% 100%); box-shadow: 0 0 0 3px var(--paper-2); }
+.is-light .frame { background: repeating-linear-gradient(135deg, rgba(31, 26, 19, 0.035) 0 10px, transparent 10px 20px), radial-gradient(80% 60% at 30% 20%, #fffaf0, #e9dcc4); border-color: rgba(31, 26, 19, 0.14); }
+.quote p { font: italic 400 1.42rem/1.35 var(--ff-serif); letter-spacing: -0.01em; }
+
+/* ordering */
+.is-light .steps__line { background: rgba(31, 26, 19, 0.12); }
+.is-light .steps__line i { background: linear-gradient(90deg, #f4a62a, #e8781e); box-shadow: none; }
+.is-light .step::before { background: var(--paper); border-color: #b5a88f; }
+.is-light .step.is-on::before { background: #f4a62a; border-color: #e8781e; box-shadow: 0 0 0 4px rgba(244, 166, 42, 0.2); }
+
+/* quote */
+.quote__intro .title { text-wrap: balance; }
+
+/* contact + live map */
+.mapbox { min-height: 460px; display: grid; grid-template-rows: 1fr auto; padding: 8px; gap: 8px; }
+.mapbox__frame { position: relative; border-radius: 14px; overflow: hidden; min-height: 340px; background: radial-gradient(80% 70% at 50% 45%, #fffaf0, #eadfca); }
+.mapbox__frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; opacity: 0; transition: opacity 0.8s var(--ease); filter: saturate(0.88) sepia(0.1); }
+.mapbox__frame.is-loaded iframe { opacity: 1; }
+.mapbox__ph { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 14px; color: var(--muted); text-align: center; padding: 24px; transition: opacity 0.6s; }
+.mapbox__frame.is-loaded .mapbox__ph { opacity: 0; pointer-events: none; }
+.mapbox__ph svg { width: 54px; height: 54px; }
+.mapbox__ph p { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--dim); }
+.mapbox__card { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 16px; padding: 12px 10px 8px 12px; }
+.mapbox__card b { display: block; font: 600 1rem var(--ff-display); }
+.mapbox__card span { font-size: 0.86rem; color: var(--muted); }
+.mapbox__actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* night sections */
+.pcard__media { background: radial-gradient(80% 70% at 50% 40%, #173a41, #081c21 70%); }
+.pcard__more, .forms { background: rgba(4, 20, 24, 0.66); }
+.studio__view { background: radial-gradient(70% 80% at 50% 30%, #1e3c42 0%, #0c2126 62%, #071518 100%); }
+dialog.sheet { background: linear-gradient(180deg, #0f2b31, #081b20); }
+.sheet__head { background: linear-gradient(180deg, #0f2b31 75%, rgba(15, 43, 49, 0)); }
+.drawer__foot { background: linear-gradient(0deg, #081b20 80%, rgba(8, 27, 32, 0)); }
+.pdlg__media { background: radial-gradient(80% 70% at 50% 40%, #173a41, #071a1f 70%); }
+.field select option, .lf select option { background: #0b2328; }
+.toast { background: rgba(7, 29, 34, 0.95); }
+@media (max-width: 600px) { .cmp__table tbody th, .cmp__table thead th:first-child { background: #0c2429; } }
+@media (max-width: 960px) {
+  .nav__menu { background: rgba(4, 21, 25, 0.97); }
+  .actionbar { background: rgba(5, 24, 29, 0.86); }
+  .chapter__text { background: rgba(4, 20, 24, 0.55); }
+  .story::before { background: linear-gradient(0deg, rgba(3, 17, 21, 0.86) 0%, rgba(3, 17, 21, 0.45) 45%, transparent 70%); }
+}
+
+/* finale: a lotus mandala turns slowly behind the call to action */
+.finale { background: radial-gradient(70% 55% at 50% 115%, rgba(244, 166, 42, 0.42), rgba(232, 120, 30, 0.12) 45%, transparent 70%), linear-gradient(180deg, var(--slate), var(--deep) 60%, #05171a); position: relative; }
+.finale .container { position: relative; z-index: 1; }
+.mandala { position: absolute; left: 50%; top: 50%; width: min(980px, 150vw); aspect-ratio: 1; transform: translate(-50%, -50%); pointer-events: none; opacity: 0.55; }
+.mandala svg { width: 100%; height: 100%; animation: spin 160s linear infinite; }
+.mandala svg * { fill: none; stroke: rgba(244, 166, 42, 0.2); stroke-width: 0.8; vector-effect: non-scaling-stroke; }
+.mandala .m-dot { fill: rgba(244, 166, 42, 0.28); stroke: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.finale__title { font: 400 clamp(2.6rem, 7vw, 6.6rem)/1.02 var(--ff-serif); letter-spacing: -0.035em; font-variation-settings: "opsz" 144; }
+.finale__radhe { display: block; margin: 0 auto 22px; font: 400 1.15rem/1 var(--ff-deva); color: #f6c46a; letter-spacing: 0.06em; }
+
+/* header WhatsApp */
+.hdr__wa { display: inline-flex; align-items: center; gap: 7px; height: 38px; padding: 0 12px; border-radius: 999px; font: 500 0.84rem var(--ff); color: #dff7e8; border: 1px solid rgba(37, 211, 102, 0.38); background: rgba(37, 211, 102, 0.1); transition: background-color 0.25s, border-color 0.25s; }
+.hdr__wa svg { width: 17px; height: 17px; color: #25d366; }
+.hdr__wa:hover { background: rgba(37, 211, 102, 0.2); border-color: rgba(37, 211, 102, 0.6); }
+.hdr__call:hover { color: var(--sun); }
+@media (max-width: 1180px) { .hdr__wa span { display: none; } .hdr__wa { width: 38px; padding: 0; justify-content: center; } }
+@media (max-width: 960px) { .hdr__wa { display: none; } }
+
+/* footer */
+.ftr { background: #041316; }
+.ftr__founder { color: var(--muted); font-size: 0.86rem; margin-top: 10px; }
+.ftr__radhe { display: inline-flex; align-items: center; gap: 10px; margin-top: 18px; font: 400 1.1rem/1 var(--ff-deva); color: #f6c46a; letter-spacing: 0.04em; }
+.ftr__radhe svg { width: 26px; height: 20px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mandala svg { animation: none; }
+  .loader__lotus path { stroke-dashoffset: 0; }
+  .loader__radhe { opacity: 1; }
+}
+@media print { .petals, .mandala, .toran { display: none !important; } }
+.invocation { display: flex; width: fit-content; }
+.nav__menu a, .hdr__call, .hdr__list { white-space: nowrap; }
+@media (max-width: 1420px) { .hdr__wa span { display: none; } .hdr__wa { width: 38px; padding: 0; justify-content: center; } }
+@media (max-width: 1300px) { .hdr__list-label { display: none; } .hdr__list { padding: 0 10px; } }
+/* statement: a quiet lotus balances the words on wide screens */
+@media (min-width: 961px) {
+  .statement > .container { position: relative; }
+  .statement > .container::after {
+    content: ""; position: absolute; right: var(--gutter); top: -20px; width: min(30vw, 420px); aspect-ratio: 92 / 64; pointer-events: none;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 92 64'%3E%3Cg fill='none' stroke='%23b8560f' stroke-width='.45' stroke-linejoin='round' opacity='.38'%3E%3Cpath d='M46 6C53 16 53 32 46 44C39 32 39 16 46 6Z'/%3E%3Cpath d='M46 44C36 39 27 29 25 16C37 19 44 29 46 44ZM46 44C56 39 65 29 67 16C55 19 48 29 46 44Z'/%3E%3Cpath d='M46 47C31 48 15 41 8 29C24 28 37 35 46 47ZM46 47C61 48 77 41 84 29C68 28 55 35 46 47Z'/%3E%3Cpath d='M20 58C34 53 58 53 72 58M28 62C38 59.5 54 59.5 64 62'/%3E%3Cpath d='M46 12C48.5 18 48.5 30 46 38M46 12C43.5 18 43.5 30 46 38' opacity='.6'/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat;
+  }
+}
+.tile .tile__num { font-size: clamp(5rem, 11vw, 9.5rem); color: transparent; }
+.tile .tile__numlabel { font-size: 0.72rem; color: var(--sun); }
+/* The Google place card (top-left of the embed) shows the listing's PIN code, which is not yet confirmed.
+   Crop it out; the map, pin and Google's attribution stay visible. Remove once the listing is verified. */
+.mapbox__frame { --crop: 150px; }
+.mapbox__frame iframe { top: calc(-1 * var(--crop)); height: calc(100% + var(--crop)); }
